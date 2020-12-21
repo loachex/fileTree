@@ -28,6 +28,8 @@ class Tree
 {
     private:
         folder *headFolder;
+        
+        void generate();
     public:
         int depth;
         string headFolderPath;
@@ -35,5 +37,4 @@ class Tree
         Tree(string Path);
         ~Tree();
 
-        void generate();
 };
