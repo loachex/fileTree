@@ -1,28 +1,11 @@
-#include <iostream>
-
-#ifndef _H_VECTOR
-#include <vector>
-#define _H_VECTOR
-#endif
-
-#ifndef _H_DIRENT
-#include <dirent.h>
-#define _H_DIRENT
-#endif
+#include "path.hpp"
 
 using namespace std;
 
-typedef struct
+class folder
 {
-    vector<string> *subFolder;
-    vector<string> *files;
-
-    string folderName;
-    string dirPath;
-
-    int _depth; //相对于顶级文件夹的深度
-    int _uGSFN; //没有迭代的子文件夹数量(unGenerateSubFoldersNum)
-} folder;
+    
+}
 
 class Tree
 {
