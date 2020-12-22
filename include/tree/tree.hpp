@@ -33,7 +33,6 @@ public:
     //释放内存时只释放folder中的file列表指针、所有file指针和subFolder列表指针
     //关联的子Folder指针不会被释放
 
-private:
     void read();
 };
 

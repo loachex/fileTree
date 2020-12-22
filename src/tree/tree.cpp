@@ -21,6 +21,7 @@ file::~file()
 /*----------class folder----------*/
 folder::folder(string Path, string upPath, int depth)
 {
+    
     folderPath = Path;
     upFolderPath = upPath;
 
@@ -29,8 +30,6 @@ folder::folder(string Path, string upPath, int depth)
 
     _depth = depth;
     _unGenerateSubFoldersNum = subFolders->size();
-
-    read();
 
 #ifndef NDEBUG
     cout << "创建folder实例：" << this << endl;
@@ -53,4 +52,19 @@ folder::~folder()
 
 void folder::read()
 {
+    DIR *dir;
+    struct dirent *ptr;
+
+    char *curfileName;
+    string scurfileName;
+    while((ptr==readdir(dir))!=NULL)
+    {
+        curfileName=ptr->d_name;
+        scurfileName=curfileName;
+
+        if(curfileName[0]=='.')continue;
+        
+
+
+    }
 }

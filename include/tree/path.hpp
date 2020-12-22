@@ -17,6 +17,9 @@
 
 using namespace std;
 
+vector<string>split(string s,char c);
+
+string dirName(string path);
 string joinPath(string path1, string path2);
 string joinPath(vector<string> paths);
 
