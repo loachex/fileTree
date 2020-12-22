@@ -37,7 +37,13 @@ inline string joinPath(string path1,string path2)
 {
     return path1+"/"+path2;
 }
-
+string joinPath(string path1,char *path2)
+{
+    string spath2;
+    const char *cpath2=path2;
+    spath2=cpath2;
+    return path1+"/"+spath2;
+}
 string joinPath(vector<string> paths)
 {
     string path="";
@@ -73,7 +79,6 @@ bool isFile(string Path)
     struct stat buffer;
     return (stat(Path.c_str(), &buffer) == 0 && S_ISREG(buffer.st_mode));
 }
-
 bool isFolder(string Path)
 {
     struct stat buffer;

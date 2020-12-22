@@ -5,6 +5,16 @@
 #define _H_VECTOR
 #endif
 
+#ifndef _H_STRING
+#include <string.h>
+#define _H_STRING
+#endif
+
+#ifndef _H_SSTREAM
+#include <sstream>
+#define _H_SSTREAM
+#endif
+
 #ifndef _H_DIRENT
 #include <dirent.h>
 #define _H_DIRENT
@@ -21,6 +31,7 @@ vector<string>split(string s,char c);
 
 string dirName(string path);
 string joinPath(string path1, string path2);
+string joinPath(string path1,char *path2);
 string joinPath(vector<string> paths);
 
 string getFormat(string fileName);
