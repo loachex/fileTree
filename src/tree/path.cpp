@@ -30,7 +30,9 @@ vector<string>split(string s,char c)
 
 string dirPath(string path)
 {
-
+	vetcor<string> splitResult=split(path);
+	splitResult.erase(splitResult.size()-1);
+	return joinPath(splitResult);
 }
 
 inline string joinPath(string path1,string path2)

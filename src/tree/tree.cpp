@@ -24,8 +24,8 @@ folder::folder(string Path, int depth)
 
     folderPath = Path;
 
-    subFolders = new vector<string>;
-    files = new vector<string>;
+    subFolders = vector<string>;
+    files = vector<string>;
 
     _depth = depth;
     _unGenerateSubFoldersNum = subFolders->size();
@@ -38,10 +38,8 @@ folder::folder(string Path, int depth)
 
 folder::~folder()
 {
-    vector<string>().swap(*files);
-    vector<string>().swap(*subFolders);
-    delete files;
-    delete subFolders;
+    vector<string>().swap(files);
+    vector<string>().swap(subFolders);
 
 #ifdef DEBUG
     cout << "销毁folder实例：" << this << endl;
@@ -66,9 +64,9 @@ void folder::read()
         curTargetPath = joinPath(folderPath, curTargetName);
 
         if (isFolder(curTargetPath))
-            subFolders->push_back(curTargetName);
+            subFolders.push_back(curTargetName);
         else
-            files->push_back(curTargetName);
+            files.push_back(curTargetName);
     }
 }
 
@@ -82,10 +80,10 @@ void folder::show()
 
     for (int subFolderNum = 0; subFolderNum < subFolders->size(); ++subFolderNum)
     {
-        cout << space7dot1 + (*subFolders)[subFolderNum] << endl;
+        cout << space7dot1 + subFolders[subFolderNum] << endl;
     }
     for (int fileNum = 0; fileNum < files->size(); ++fileNum)
     {
-        cout << space7dot2 + (*files)[fileNum] << endl;
+        cout << space7dot2 + files[fileNum] << endl;
     }
 }
