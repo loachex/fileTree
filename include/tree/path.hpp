@@ -29,9 +29,11 @@ using namespace std;
 
 vector<string>split(string s,char c);
 
-string dirName(string path);
+string dirPath(string path);
+
 string joinPath(string path1, string path2);
 string joinPath(string path1,char *path2);
+string joinPath(char *path1,char *path2);
 string joinPath(vector<string> paths);
 
 string getFormat(string fileName);

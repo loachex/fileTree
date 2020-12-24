@@ -1,5 +1,6 @@
 #include "../../include/tree/path.hpp"
 
+
 vector<string>split(string s,char c)
 {
     const char *cString=s.c_str();
@@ -30,8 +31,8 @@ vector<string>split(string s,char c)
 
 string dirPath(string path)
 {
-	vetcor<string> splitResult=split(path);
-	splitResult.erase(splitResult.size()-1);
+	vector<string> splitResult=split(path,'/');
+	splitResult.pop_back();
 	return joinPath(splitResult);
 }
 
@@ -46,15 +47,34 @@ string joinPath(string path1,char *path2)
     spath2=cpath2;
     return path1+"/"+spath2;
 }
+string joinPath(char *path1,char *path2)
+{
+    string spath1,spath2;
+    const char *cpath1,*cpath2;
+    cpath1=path1;
+    cpath2=path2;
+    spath1=cpath1;
+    spath2=cpath2;
+
+    return spath1+spath2;
+}
 string joinPath(vector<string> paths)
 {
-    string path="";
-    for(int pathsnum=0;pathsnum<paths.size();++pathsnum)
+    if (paths.size()==1)
     {
-        path+=paths[pathsnum];
+        return paths[0];
     }
-
-    return path;
+    else
+    {
+        string path="";
+        int pathsnum;
+        for(pathsnum=0;pathsnum<paths.size()-1;++pathsnum)
+        {
+            path+=paths[pathsnum];
+            path+="/";
+        }
+        return path+paths[pathsnum];
+    }
 }
 
 string getFormat(string name)
