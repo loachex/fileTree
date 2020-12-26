@@ -11,11 +11,12 @@ class file
 {
 
 public:
-    string name;
+    string fileName;
+    string filePath;
     string format;
 
     bool _show;
 
-    file(string name, bool show);
+    file(string ifilePath, bool show);
     ~file();
 };

@@ -4,7 +4,8 @@
 using namespace std;
 int main()
 {
-    string testPath="../../include/tree/tree.hpp";
-    cout<<dirPath(testPath)<<endl;
+    string testFolderPath="/home/loachex/prog/cpp/proj/imgTree/testfiles";
+    Tree *tp=new Tree(testFolderPath);
+
 
 }

@@ -36,7 +36,7 @@ string dirPath(string path)
 	return joinPath(splitResult);
 }
 
-inline string joinPath(string path1,string path2)
+string joinPath(string path1,string path2)
 {
     return path1+"/"+path2;
 }

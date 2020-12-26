@@ -7,15 +7,20 @@ using namespace std;
 
 class Tree
 {
-private:
-    folder *headFolder;
+private:    
+    string rootPath;
+    int depth;    
+    
+    folder *rootFolder;
 
-    void generate();
-
+    void build();
+    void destory();
 public:
-    int depth;
-    string headFolderPath;
-
-    Tree(string Path);
+    Tree(string irootPath);
     ~Tree();
+
+    void reload();
+    void show();
+    void flatten();
+    void flitter();
 };

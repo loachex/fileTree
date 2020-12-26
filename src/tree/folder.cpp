@@ -4,13 +4,16 @@ folder::folder(string Path, int depth)
 {
 
     folderPath = Path;
+    folderName = split(Path, '/').back();
+    folderDir = dirPath(Path);
 
     _depth = depth;
-    _unGenerateSubFoldersNum = 0;
+    _unBuildSubFoldersNum = 0;
+
     read();
 
 #ifdef DEBUG
-    cout << "创建folder实例：" << this << endl;
+    cout << "创建folder实例：" << this << "--" << this->folderName << endl;
 #endif
 }
 
@@ -20,7 +23,7 @@ folder::~folder()
     vector<string>().swap(subFolders);
 
 #ifdef DEBUG
-    cout << "销毁folder实例：" << this << endl;
+    cout << "销毁folder实例：" << this << "--" << this->folderName << endl;
 #endif
 }
 
@@ -37,7 +40,7 @@ void folder::read()
     while ((ptr = readdir(dir)) != NULL)
     {
         curTargetName = ptr->d_name;
-        if (curTargetName[0] == '.')
+        if (curTargetName[0] == '.') //跳过. ..两个文件夹
             continue;
         curTargetPath = joinPath(folderPath, curTargetName);
 
@@ -46,6 +49,8 @@ void folder::read()
         else
             files.push_back(curTargetName);
     }
+    //更新未构建的子文件夹路径列表
+    _unBuildSubFoldersNum = subFolders.size();
 }
 
 void folder::show()

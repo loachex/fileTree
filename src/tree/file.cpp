@@ -1,19 +1,21 @@
 #include "../../include/tree/file.hpp"
 
-file::file(string name, bool show = true)
+file::file(string ifilePath, bool show = true)
 {
-    name = name;
-    format = getFormat(name);
+    filePath=ifilePath;
+    fileName=split(filePath,'/').back();
+    
+    format = getFormat(fileName);
     _show = show;
 
 #ifdef DEBUG
-    cout << "创建file实例：" << this << endl;
+    cout << "创建file实例：" << this << "--" << this->fileName << endl;
 #endif
 }
 
 file::~file()
 {
 #ifdef DEBUG
-    cout << "销毁file实例：" << this << endl;
+    cout << "销毁file实例：" << this << "--" << this->fileName << endl;
 #endif
 }
