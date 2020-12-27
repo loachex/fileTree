@@ -84,7 +84,7 @@ string getFormat(string name)
     string revertFormat , format = "";
 
     //获得revertFormat 拓展名（以"."）为分割
-    for (int namecharnum = name.size(); c_name[namecharnum] != '.'; --namecharnum)
+    for (int namecharnum = name.size(); c_name[namecharnum] != '.'&&namecharnum>-1; --namecharnum)
     {
         revertFormat = revertFormat + c_name[namecharnum];
     }

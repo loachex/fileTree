@@ -3,19 +3,28 @@
 #define _H_FOLDER
 #endif
 
+#ifndef _H_TIME
+#include <time.h>
+#define _H_TIME
+#endif
+
 using namespace std;
 
 class Tree
 {
-private:    
-
+private:
+    vector<folder *> stack;
 
     void build();
+    void buildByStack();
     void destory();
-public:    
-    int depth;    
+
+public:
+    int depth;
     int includeFolderNum;
     int includeFileNum;
+    double _MemoryUsage;
+
     string rootPath;
     folder *rootFolder;
 
