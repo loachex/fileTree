@@ -9,6 +9,7 @@ folder::folder(string Path, int depth)
 
     _depth = depth;
     _unBuildSubFoldersNum = 0;
+    _unBuildFileNum = 0;
 
     read();
 
@@ -49,8 +50,9 @@ void folder::read()
         else
             files.push_back(curTargetName);
     }
-    //更新未构建的子文件夹路径列表
+    //更新未构建的子文件夹数量和文件数量
     _unBuildSubFoldersNum = subFolders.size();
+    _unBuildFileNum=files.size();
 }
 
 void folder::show()

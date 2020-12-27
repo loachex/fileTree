@@ -8,14 +8,17 @@ using namespace std;
 class Tree
 {
 private:    
-    string rootPath;
-    int depth;    
-    
-    folder *rootFolder;
+
 
     void build();
     void destory();
-public:
+public:    
+    int depth;    
+    int includeFolderNum;
+    int includeFileNum;
+    string rootPath;
+    folder *rootFolder;
+
     Tree(string irootPath);
     ~Tree();
 

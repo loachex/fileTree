@@ -33,7 +33,8 @@ string dirPath(string path)
 {
 	vector<string> splitResult=split(path,'/');
 	splitResult.pop_back();
-	return joinPath(splitResult);
+    if(!splitResult.size())return "..";
+	else return joinPath(splitResult);
 }
 
 string joinPath(string path1,string path2)

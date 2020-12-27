@@ -20,9 +20,10 @@ public:
     string folderDir;  //文件夹的上级路径
 
     int _depth;                //相对于顶文件夹的深度
-    int _unBuildSubFoldersNum; //没有迭代的子folder数量
+    int _unBuildSubFoldersNum; //没有构建的子folder数量
+    int _unBuildFileNum;       //没有构建的文件数量
 
-    folder(string Path, int depth);
+    folder(string Path, int depth); //根文件夹用这个
     ~folder();
 
     void show();
