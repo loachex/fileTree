@@ -4,9 +4,7 @@
 using namespace std;
 int main()
 {
-    string testFolderPath="/home/loachex/software/opencv-3.4.12";
+    string testFolderPath="/media/loachex/SGS 1T/1";
     Tree *tp=new Tree(testFolderPath);
-    cout<<"include "<<to_string(tp->includeFolderNum)<<" folders and "<<to_string(tp->includeFileNum)<<" files"<<endl;
-    cout<<"Memory Usage:"<<to_string(tp->_MemoryUsage/1024)<<"KB"<<endl;
-
+    delete tp;
 }

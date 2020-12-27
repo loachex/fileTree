@@ -11,7 +11,7 @@ public:
     vector<string> subFolders;
     vector<string> files;
 
-    folder *dirFolder;
+    folder *dirFolder;            //只能由Tree对象添加和删除
     vector<folder *> psubFolders; //只能由Tree对象添加和删除
     vector<file *> pfiles;        //只能由Tree对象添加和删除
 

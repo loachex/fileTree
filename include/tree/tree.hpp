@@ -13,10 +13,7 @@ using namespace std;
 class Tree
 {
 private:
-    vector<folder *> stack;
-
     void build();
-    void buildByStack();
     void destory();
 
 public:
@@ -27,6 +24,9 @@ public:
 
     string rootPath;
     folder *rootFolder;
+
+    vector<folder *> apflattenFolders; //展开的所有Folder*列表
+    vector<file *> apflattenFiles;     //展开的所有file*列表
 
     Tree(string irootPath);
     ~Tree();

@@ -11,14 +11,19 @@ Tree::Tree(string irootPath)
     //构建
     build();
 }
+Tree::~Tree()
+{
+    destory();
+}
 
 void Tree::build()
 {
+#ifdef DEBUG
     clock_t st, et;
 
     st = clock();
-    cout << "构建树中..." << endl;
-
+#endif
+    cout << "Building Tree:" << rootFolder->folderName << "(rootFolder)" << endl;
     //前序遍历，构建树
     folder *curFolder = rootFolder;
     folder *cacheSubFolder;
@@ -40,14 +45,17 @@ void Tree::build()
             curFolder->pfiles.push_back(cacheFile);
             curFolder->_unBuildFileNum--;
 
-            ++includeFileNum; //文件数量计数
-            _MemoryUsage+=sizeof(cacheFile);//内存用量计数
+            apflattenFiles.push_back(cacheFile); //向展开文件指针列表里添加
+
+            ++includeFileNum;                  //文件数量计数
+            _MemoryUsage += sizeof(cacheFile); //内存用量计数
         }
         //构建子文件夹 (前序遍历)
         if (curFolder->_depth && !curFolder->_unBuildSubFoldersNum)
         {
             //当文件夹没有未构建的子文件夹，并且深度不为0时
             //将当前文件夹设为上级文件夹（向上）
+            if(depth<curFolder->_depth)depth=curFolder->_depth;
             curFolder = curFolder->dirFolder;
         }
         else
@@ -65,71 +73,35 @@ void Tree::build()
             //更新当前文件夹（向下）
             curFolder = cacheSubFolder;
 
-            ++includeFolderNum; //文件夹数量计数
-            _MemoryUsage+=sizeof(cacheSubFolder);//内存用量计数
+            apflattenFolders.push_back(cacheSubFolder); //向展开文件夹指针列表中添加
+
+            ++includeFolderNum;                     //文件夹数量计数
+            _MemoryUsage += sizeof(cacheSubFolder); //内存用量计数
         }
 
     } while (curFolder->_depth || curFolder->_unBuildSubFoldersNum);
 
+    cout << "include " << to_string(includeFolderNum) << " folders and " << to_string(includeFileNum) << " files" << endl;
+    cout << "Memory Usage:" << to_string(_MemoryUsage / 1024) << " KB" << endl;
+
+#ifdef DEBUG
     et = clock();
-    cout << "树" << this << "构建完毕，花费时间：" << to_string((double)(et - st) / CLOCKS_PER_SEC) << endl;
-}
-void Tree::buildByStack()
-{
-    clock_t st, et;
-
-    st = clock();
-    cout << "构建树中..." << endl;
-
-    stack.push_back(rootFolder);
-
-    folder *curFolder;
-    folder *cacheFolder;
-    file *cacheFile;
-    string cacheFolderPath;
-    string cacheFilePath;
-    vector<string>::iterator subFoldersIter;
-    vector<string>::iterator filesIter;
-
-    while (!stack.empty())
-    {
-        //从栈里取出一个元素
-        curFolder = stack.back();
-        stack.pop_back();
-        //构建文件
-        filesIter = curFolder->files.begin();
-        for (; filesIter != curFolder->files.end(); filesIter++)
-        {
-            cacheFilePath = joinPath(curFolder->folderPath, (*filesIter));
-            cacheFile = new file(cacheFilePath, true);
-            curFolder->pfiles.push_back(cacheFile);
-            
-            includeFileNum++;
-            _MemoryUsage+=sizeof(cacheFile);
-            
-            cout<<"FileNum:"<<to_string(includeFileNum)<<endl;
-        }
-        //遍历子文件夹，并添加到栈中
-        subFoldersIter = curFolder->subFolders.begin();
-        for (; subFoldersIter != curFolder->subFolders.end(); subFoldersIter++)
-        {
-            cacheFolderPath = joinPath(curFolder->folderPath, (*subFoldersIter));
-            cacheFolder = new folder(cacheFolderPath, curFolder->_depth + 1);
-            curFolder->psubFolders.push_back(cacheFolder);
-            stack.push_back(cacheFolder);
-            
-            includeFolderNum++;
-            _MemoryUsage+=sizeof(cacheFolder);
-
-            cout<<"FolderNum:"<<to_string(includeFolderNum)<<endl;
-
-        }
-    }
-
-    et = clock();
-    cout << "树" << this << "构建完毕，花费时间：" << to_string((double)(et - st) / CLOCKS_PER_SEC) << endl;
+    cout << "创建Tree实例：" << this << "cost:" << to_string((double)(et - st) / CLOCKS_PER_SEC) << " s" << endl;
+#endif
 }
 void Tree::destory()
 {
 
+    vector<folder *>::iterator apFoldersIter = apflattenFolders.begin();
+    vector<file *>::iterator apFilesIter = apflattenFiles.begin();
+
+    for (; apFilesIter != apflattenFiles.end(); apFilesIter++)
+    {
+        delete (*apFilesIter);
+    }
+    for (; apFoldersIter != apflattenFolders.end(); apFoldersIter++)
+    {
+        delete (*apFoldersIter);
+    }
+    delete rootFolder;
 }
