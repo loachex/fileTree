@@ -4,7 +4,8 @@
 using namespace std;
 int main()
 {
-    string testFolderPath="/media/loachex/SGS 1T/1";
+    string testFolderPath="/home/loachex/software";
     Tree *tp=new Tree(testFolderPath);
     delete tp;
+    
 }

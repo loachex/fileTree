@@ -23,7 +23,7 @@ void Tree::build()
 
     st = clock();
 #endif
-    cout << "Building Tree:" << rootFolder->folderName << "(rootFolder)" << endl;
+    cout << "Building Tree of" << rootFolder->folderName << endl;
     //前序遍历，构建树
     folder *curFolder = rootFolder;
     folder *cacheSubFolder;
@@ -55,7 +55,8 @@ void Tree::build()
         {
             //当文件夹没有未构建的子文件夹，并且深度不为0时
             //将当前文件夹设为上级文件夹（向上）
-            if(depth<curFolder->_depth)depth=curFolder->_depth;
+            if (depth < curFolder->_depth)
+                depth = curFolder->_depth;
             curFolder = curFolder->dirFolder;
         }
         else
@@ -86,7 +87,7 @@ void Tree::build()
 
 #ifdef DEBUG
     et = clock();
-    cout << "创建Tree实例：" << this << "cost:" << to_string((double)(et - st) / CLOCKS_PER_SEC) << " s" << endl;
+    cout << "创建Tree实例：" << this << ",cost:" << to_string((double)(et - st) / CLOCKS_PER_SEC) << " s" << endl;
 #endif
 }
 void Tree::destory()
