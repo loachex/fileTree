@@ -1,6 +1,5 @@
 #ifndef _H_FOLDER
 #include "folder.hpp"
-#define _H_FOLDER
 #endif
 
 #ifndef _H_TIME

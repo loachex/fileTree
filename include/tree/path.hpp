@@ -1,4 +1,5 @@
 #include <iostream>
+#define _H_PATH
 
 #ifndef _H_VECTOR
 #include <vector>

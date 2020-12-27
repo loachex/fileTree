@@ -1,6 +1,7 @@
+#define _H_FOLDER
+
 #ifndef _H_FILE
 #include "file.hpp"
-#define _H_FILE
 #endif
 
 using namespace std;

@@ -1,8 +1,9 @@
 #include <iostream>
 
+#define _H_FILE
+
 #ifndef _H_PATH
 #include "path.hpp"
-#define _H_PATH
 #endif
 
 using namespace std;
