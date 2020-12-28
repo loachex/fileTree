@@ -4,8 +4,19 @@
 using namespace std;
 int main()
 {
-    string testFolderPath="/home/loachex/software";
-    Tree *tp=new Tree(testFolderPath);
-    delete tp;
-    
+    string p1="/dev";
+    string p2="/opt";
+    string p3="/media/loachex/WD 500G/imgAnalyse";
+    string p4="/media/loachex/SGS 1T/1";
+
+    Tree *t1,*t2,*t3,*t4,*t5;
+    t1=new Tree(p1);
+    t2=new Tree(p1);
+    t3=new Tree(p1);
+    t4=new Tree(p1);
+    t5=new Tree(p1);
+
+
+
+ 
 }

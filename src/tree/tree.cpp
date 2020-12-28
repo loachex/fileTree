@@ -1,13 +1,19 @@
 #include "../../include/tree/tree.hpp"
 
+using namespace std;
+
 Tree::Tree(string irootPath)
 {
-    rootPath = irootPath;
     depth = 0;
+    includeFolderNum=0;
+    includeFileNum=0;
+    _MemoryUsage=0.;
 
-    //加载根文件夹
+    rootPath = irootPath;
     rootFolder = new folder(rootPath, depth);
     rootFolder->dirFolder = NULL;
+
+    
     //构建
     build();
 }
@@ -23,7 +29,7 @@ void Tree::build()
 
     st = clock();
 #endif
-    cout << "Building Tree of" << rootFolder->folderName << endl;
+    cout << "Building Tree of folder: " << rootFolder->folderName << endl;
     //前序遍历，构建树
     folder *curFolder = rootFolder;
     folder *cacheSubFolder;
@@ -48,7 +54,8 @@ void Tree::build()
             apflattenFiles.push_back(cacheFile); //向展开文件指针列表里添加
 
             ++includeFileNum;                  //文件数量计数
-            _MemoryUsage += sizeof(cacheFile); //内存用量计数
+            //cout<<"File Num:"<<to_string(includeFileNum)<<endl;
+            _MemoryUsage += sizeof(*cacheFile); //内存用量计数
         }
         //构建子文件夹 (前序遍历)
         if (curFolder->_depth && !curFolder->_unBuildSubFoldersNum)
@@ -77,7 +84,8 @@ void Tree::build()
             apflattenFolders.push_back(cacheSubFolder); //向展开文件夹指针列表中添加
 
             ++includeFolderNum;                     //文件夹数量计数
-            _MemoryUsage += sizeof(cacheSubFolder); //内存用量计数
+            //cout<<"Folder Num:"<<to_string(includeFolderNum)<<endl;
+            _MemoryUsage += sizeof(*cacheSubFolder); //内存用量计数
         }
 
     } while (curFolder->_depth || curFolder->_unBuildSubFoldersNum);
@@ -92,17 +100,24 @@ void Tree::build()
 }
 void Tree::destory()
 {
-
+    
     vector<folder *>::iterator apFoldersIter = apflattenFolders.begin();
     vector<file *>::iterator apFilesIter = apflattenFiles.begin();
 
     for (; apFilesIter != apflattenFiles.end(); apFilesIter++)
     {
         delete (*apFilesIter);
+        *apFilesIter=NULL;
     }
     for (; apFoldersIter != apflattenFolders.end(); apFoldersIter++)
     {
         delete (*apFoldersIter);
+        *apFoldersIter=NULL;
     }
     delete rootFolder;
+    rootFolder=NULL;
+
+    vector<folder *>().swap(apflattenFolders);
+    vector<file *>().swap(apflattenFiles);
+
 }

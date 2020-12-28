@@ -10,10 +10,9 @@ using namespace std;
 
 class file
 {
-
-public:
-    string fileName;
+public:    
     string filePath;
+    string fileName;
     string format;
 
     bool _show;

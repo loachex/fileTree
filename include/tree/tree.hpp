@@ -7,6 +7,11 @@
 #define _H_TIME
 #endif
 
+#ifndef _H_STACK
+#include <stack>
+#define _H_STACK
+#endif
+
 using namespace std;
 
 class Tree
@@ -15,11 +20,15 @@ private:
     void build();
     void destory();
 
+    
+
 public:
     int depth;
     int includeFolderNum;
     int includeFileNum;
     double _MemoryUsage;
+
+    
 
     string rootPath;
     folder *rootFolder;
