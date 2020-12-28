@@ -74,6 +74,13 @@ void Tree::build()
             //新建子文件夹，并将其添加至当前文件夹的psubFolders中
             curSubFolderName = curFolder->subFolders[curFolder->subFolders.size() - curFolder->_unBuildSubFoldersNum];
             cacheSubFolder = new folder(joinPath(curFolderPath, curSubFolderName), curFolder->_depth + 1);
+            if(!cacheSubFolder->_ok)//若是坏文件夹，则跳过
+            {
+                --curFolder->_unBuildSubFoldersNum;
+                continue;
+                //也许会造成内存泄露？
+            }
+
             cacheSubFolder->dirFolder = curFolder;
             curFolder->psubFolders.push_back(cacheSubFolder);
             //当前文件夹的未构建子文件夹数-1

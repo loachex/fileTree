@@ -6,6 +6,7 @@ folder::folder(string Path, int depth)
     folderName = split(Path, '/').back();
     folderDir = dirPath(Path);
 
+    _ok=true;
     _depth = depth;
     _unBuildSubFoldersNum = 0;
     _unBuildFileNum = 0;
@@ -37,6 +38,12 @@ void folder::read()
     string curTargetPath;
 
     dir = opendir(folderPath.c_str());
+    if(dir==NULL)
+    {
+        cout<<"Can not read folder:"<<folderPath<<endl;
+        _ok=false;
+        return;
+    }
     while ((ptr = readdir(dir)) != NULL)
     {
         curTargetName = ptr->d_name;
@@ -52,6 +59,8 @@ void folder::read()
     //更新未构建的子文件夹数量和文件数量
     _unBuildSubFoldersNum = subFolders.size();
     _unBuildFileNum=files.size();
+
+    closedir(dir);
 }
 
 void folder::show()

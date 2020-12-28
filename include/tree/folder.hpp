@@ -20,6 +20,7 @@ public:
     string folderName; //文件夹名称
     string folderDir;  //文件夹的上级路径
 
+    bool _ok;
     int _depth;                //相对于顶文件夹的深度
     int _unBuildSubFoldersNum; //没有构建的子folder数量
     int _unBuildFileNum;       //没有构建的文件数量
