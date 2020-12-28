@@ -2,8 +2,6 @@
 
 folder::folder(string Path, int depth)
 {
-    
-
     folderPath = Path;
     folderName = split(Path, '/').back();
     folderDir = dirPath(Path);
