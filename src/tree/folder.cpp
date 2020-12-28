@@ -6,77 +6,78 @@ folder::folder(string Path, int depth)
     folderName = split(Path, '/').back();
     folderDir = dirPath(Path);
 
-    _ok=true;
+    _ok = true;
     _depth = depth;
     _unBuildSubFoldersNum = 0;
     _unBuildFileNum = 0;
 
     read();
-
-#ifdef DEBUG
-    cout << "创建folder实例：" << this << "--" << this->folderName << endl;
-#endif
 }
 
 folder::~folder()
 {
-    vector<string>().swap(files);
-    vector<string>().swap(subFolders);
-
-#ifdef DEBUG
-    cout << "销毁folder实例：" << this << "--" << this->folderName << endl;
-#endif
+    vector<string>().swap(filesPath);
+    vector<string>().swap(subFoldersPath);
 }
 
 void folder::read()
 {
-    DIR *dir;
-    struct dirent *ptr;
+    DIR *dir;           //目录结构体指针
+    struct dirent *ptr; //用于遍历目录中的指针
 
-    char *curTargetName;
-    string scurTargetName;
-    string curTargetPath;
+    char *curTargetName;   //当前对象的名称（用于直接获取d_name）
+    string scurTargetName; //当前对象的名称（转化为string，方便后续路径操作）
+    string curTargetPath;  //当前对象路径
 
-    dir = opendir(folderPath.c_str());
-    if(dir==NULL)
+    dir = opendir(folderPath.c_str()); //打开目录，成功返回目录结构体指针，不成功返回NULL
+                                       //错误码：
+                                       //1、EACCESS 权限不足。
+                                       //2、EMFILE 已达到进程可同时打开的文件数上限。
+                                       //3、ENFILE 已达到系统可同时打开的文件数上限。
+                                       //4、ENOTDIR 参数name 非真正的目录。
+                                       //5、ENOENT 参数name 指定的目录不存在, 或是参数name 为一空字符串。
+                                       //6、ENOMEM 核心内存不足。
+    if (dir == NULL)
     {
-        cout<<"Can not read folder:"<<folderPath<<endl;
-        _ok=false;
-        return;
+        //无法打开目录，则输出信息，并将其正常值设为false
+        cout << "Can not read folder:" << folderPath << endl;
+        _ok = false;
+        return; //直接跳出
     }
-    while ((ptr = readdir(dir)) != NULL)
+    while ((ptr = readdir(dir)) != NULL) //当ptr指向的对象不是NULL时，遍历目录
     {
         curTargetName = ptr->d_name;
-        if (curTargetName[0] == '.') //跳过. ..两个文件夹
+        if (curTargetName[0] == '.') //跳过. ..两个目录
             continue;
         curTargetPath = joinPath(folderPath, curTargetName);
-
+        //判断目录或文件，并分别添加到相应的列表
         if (isFolder(curTargetPath))
-            subFolders.push_back(curTargetName);
+            subFoldersPath.push_back(curTargetName);
         else
-            files.push_back(curTargetName);
+            filesPath.push_back(curTargetName);
     }
-    //更新未构建的子文件夹数量和文件数量
-    _unBuildSubFoldersNum = subFolders.size();
-    _unBuildFileNum=files.size();
-
+    //更新未构建的子目录数量和文件数量
+    _unBuildSubFoldersNum = subFoldersPath.size();
+    _unBuildFileNum = filesPath.size();
+    //!!!一定要关闭dir句柄，否则会导致进程调用文件句柄过多而引发段错误!!!
     closedir(dir);
 }
 
 void folder::show()
 {
+    //显示目录信息
     cout << "Folder:" << folderPath << endl;
-    cout << "Content:" << to_string(subFolders.size()) << " folders and " << to_string(files.size()) << " files" << endl;
+    cout << "Content:" << to_string(subFoldersPath.size()) << " folders and " << to_string(filesPath.size()) << " files" << endl;
 
     string space7dot1 = "       -";
     string space7dot2 = "       --";
 
-    for (int subFolderNum = 0; subFolderNum < subFolders.size(); ++subFolderNum)
+    for (int subFolderNum = 0; subFolderNum < subFoldersPath.size(); ++subFolderNum)
     {
-        cout << space7dot1 + subFolders[subFolderNum] << endl;
+        cout << space7dot1 + subFoldersPath[subFolderNum] << endl;
     }
-    for (int fileNum = 0; fileNum < files.size(); ++fileNum)
+    for (int fileNum = 0; fileNum < filesPath.size(); ++fileNum)
     {
-        cout << space7dot2 + files[fileNum] << endl;
+        cout << space7dot2 + filesPath[fileNum] << endl;
     }
 }
