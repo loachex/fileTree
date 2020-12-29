@@ -1,12 +1,12 @@
 #include "../../include/tree/file.hpp"
 
-file::file(string ifilePath, bool show = true)
+file::file(string ifilePath)
 {
-    filePath=ifilePath;
-    fileName=split(filePath,'/').back();
-    
+    filePath = ifilePath;
+    fileName = split(filePath, '/').back();
+
     format = getFormat(fileName);
-    _show = show;
+    _fit = true;
 
 #ifdef DEBUG
     cout << "创建file实例：" << this << "--" << this->fileName << endl;

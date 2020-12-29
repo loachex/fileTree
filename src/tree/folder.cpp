@@ -2,14 +2,18 @@
 
 folder::folder(string Path, int depth)
 {
-    folderPath = Path;
-    folderName = split(Path, '/').back();
-    folderDir = dirPath(Path);
+    includeFilesNum = 0;
+    includeSubFoldersNum = 0;
 
     _ok = true;
+    _fit = 0;
     _depth = depth;
     _unBuildSubFoldersNum = 0;
     _unBuildFileNum = 0;
+
+    folderPath = Path;
+    folderName = split(Path, '/').back();
+    folderDir = dirPath(Path);
 
     read();
 }
@@ -59,6 +63,8 @@ void folder::read()
     //更新未构建的子目录数量和文件数量
     _unBuildSubFoldersNum = subFoldersPath.size();
     _unBuildFileNum = filesPath.size();
+    includeSubFoldersNum = subFoldersPath.size();
+    includeFilesNum = filesPath.size();
     //!!!一定要关闭dir句柄，否则会导致进程调用文件句柄过多而引发段错误!!!
     closedir(dir);
 }

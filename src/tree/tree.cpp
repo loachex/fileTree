@@ -2,14 +2,13 @@
 
 using namespace std;
 
-Tree::Tree(string irootPath, int option)
+Tree::Tree(string irootPath)
 {
     //属性值初始化
     depth = 0;
     includeFolderNum = 0;
     includeFileNum = 0;
-    _MemoryUsage = 0.;
-
+    //根文件夹初始化
     rootPath = irootPath;
     rootFolder = new folder(rootPath, depth);
     rootFolder->pdirFolder = NULL;
@@ -18,7 +17,6 @@ Tree::Tree(string irootPath, int option)
         cout << "Please check the path of rootFolder." << endl;
         return;
     }
-
     //构建
     build();
 }
@@ -35,8 +33,7 @@ void Tree::build()
     //计时以及初始信息输出
     clock_t st, et;
     st = clock();
-    cout << "Building fileTree of folder: " << rootFolder->folderName << endl;
-
+    cout << "Building fileTree of folder:'" << rootFolder->folderPath << "'" << endl;
     //前序遍历，构建树
     folder *curFolder = rootFolder; //工作本目录指针
     folder *cacheSubFolder;         //（用于添加至列表中的）暂存目录指针
@@ -55,14 +52,11 @@ void Tree::build()
         {
             //在工作本目录中有未构建的文件，则构建文件
             curFileName = curFolder->filesPath[curFolder->filesPath.size() - curFolder->_unBuildFileNum];
-            cacheFile = new file(joinPath(curFolderPath.c_str(), curFileName.c_str()), true); //为了解决某个未知的BUG，这里用了c_str()
+            cacheFile = new file(joinPath(curFolderPath.c_str(), curFileName.c_str())); //为了解决某个未知的BUG，这里用了c_str()
             curFolder->pfiles.push_back(cacheFile);
             curFolder->_unBuildFileNum--;
             //向展开文件指针列表里添加
             apflattenFiles.push_back(cacheFile);
-            //计数
-            ++includeFileNum;                   //文件数量
-            _MemoryUsage += sizeof(*cacheFile); //内存用量
         }
         //构建子目录
         if (curFolder->_depth && !curFolder->_unBuildSubFoldersNum)
@@ -97,18 +91,20 @@ void Tree::build()
             curFolder = cacheSubFolder;
             //添加至展开子目录指针列表
             apflattenFolders.push_back(cacheSubFolder);
-            //计数
-            ++includeFolderNum;                      //目录数量
-            _MemoryUsage += sizeof(*cacheSubFolder); //内存用量
         }
 
     } while (curFolder->_depth || curFolder->_unBuildSubFoldersNum);
 
+    //计数
+    includeFolderNum = apflattenFolders.size();
+    includeFileNum = apflattenFiles.size();
+    //构建迭代器
+    freshIterEdge();
+    seekIter(ITER, IterBegin);
     //结果报告
     et = clock();
     cout << "Build finished in " << to_string((double)(et - st) / CLOCKS_PER_SEC) << "s" << endl;
     cout << "include " << to_string(includeFolderNum) << " folders and " << to_string(includeFileNum) << " files" << endl;
-    cout << "Memory Usage:" << to_string(_MemoryUsage / 1024) << " KB" << endl;
 }
 void Tree::destory()
 {
@@ -131,4 +127,64 @@ void Tree::destory()
 
     vector<folder *>().swap(apflattenFolders);
     vector<file *>().swap(apflattenFiles);
+}
+
+void Tree::freshIterEdge()
+{
+    folderIterBegin = apflattenFolders.begin();
+    folderIterEnd = apflattenFolders.end();
+    fileIterBegin = apflattenFiles.begin();
+    fileIterEnd = apflattenFiles.end();
+}
+void Tree::seekIter(int whichIter, int position)
+{
+    position %= 2;
+    if (whichIter == FILEITER || whichIter == ITER)
+    {
+        if (position == IterBegin)
+            fileIter = fileIterBegin;
+        else
+            fileIter = fileIterEnd;
+    }
+    if (whichIter == FOLDERITER || whichIter == ITER)
+    {
+        if (position == IterBegin)
+            folderIter = folderIterBegin;
+        else
+            folderIter = folderIterEnd;
+    }
+}
+file* Tree::nextFile(bool recycle = false)
+{
+    if (fileIter == fileIterEnd)
+    {
+        if (recycle)
+        {
+            seekIter(FILEITER, IterBegin);
+        }
+        else
+        {
+            cout << "no more files" << endl;
+            return NULL;
+        }
+    }
+
+    return *(fileIter++);
+}
+folder* Tree::nextFolder(bool recycle = false)
+{
+    if (folderIter == folderIterEnd)
+    {
+        if (recycle)
+        {
+            seekIter(FOLDERITER, IterBegin);
+        }
+        else
+        {
+            cout << "no more folders" << endl;
+            return NULL;
+        }
+    }
+
+    return *(folderIter++);
 }

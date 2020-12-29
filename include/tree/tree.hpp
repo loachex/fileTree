@@ -32,7 +32,6 @@ public:
     int depth;            //树的深度
     int includeFolderNum; //包含的子目录数量
     int includeFileNum;   //包含的子文件数量
-    double _MemoryUsage;  //内存占用
 
     string rootPath;    //根目录路径
     folder *rootFolder; //根目录指针
@@ -40,6 +39,25 @@ public:
     vector<folder *> apflattenFolders; //展开的所有子目录指针列表
     vector<file *> apflattenFiles;     //展开的所有子文件指针列表
 
-    Tree(string irootPath,int option);
+    vector<folder *>::iterator folderIter;      //展开的所有子目录指针列表迭代器
+    vector<folder *>::iterator folderIterBegin; //展开的所有子目录指针列表迭代器:首端
+    vector<folder *>::iterator folderIterEnd;   //展开的所有子目录指针列表迭代器：末端
+    vector<file *>::iterator fileIter;          //展开的所有子文件指针列表迭代器
+    vector<file *>::iterator fileIterBegin;     //展开的所有子文件指针列表迭代器：首端
+    vector<file *>::iterator fileIterEnd;       //展开的所有子文件指针列表迭代器：末端
+
+    Tree(string irootPath);
     ~Tree();
+
+/*迭代器操作*/
+#define ITER 0
+#define FILEITER 1
+#define FOLDERITER 2
+#define IterBegin 0
+#define IterEnd 1
+
+    void freshIterEdge();                       //刷新迭代器的边界
+    void seekIter(int whichIter, int position); //定位迭代器位置：whichIter
+    file *nextFile(bool recycle);               //返回下一个文件指针，当达到末尾时自动循环或者停止
+    folder *nextFolder(bool recycle);           //返回下一个文件夹指针，当达到末尾时自动循环或者停止
 };

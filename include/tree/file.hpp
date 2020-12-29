@@ -6,17 +6,22 @@
 #include "path.hpp"
 #endif
 
+#ifndef _H_MAP
+#define _H_MAP
+#include <map>
+#endif
+
 using namespace std;
 
 class file
 {
-public:    
-    string filePath;
-    string fileName;
-    string format;
+public:
+    string filePath;//文件路径
+    string fileName;//文件名称
+    string format;//文件格式（后缀名）
 
-    bool _show;
+    bool _fit;//文件是否通过过滤器
 
-    file(string ifilePath, bool show);
+    file(string ifilePath);
     ~file();
 };
