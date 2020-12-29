@@ -18,10 +18,12 @@ class Tree
 {
 private:
     /*完全构建目录，包括：
-        1.基本信息
-        2.展开的子目录指针列表
-        3.展开的子文件指针列表
-        4.目录以及文件之间的树结构
+        1.基本信息        
+        2.目录以及文件之间的树结构
+        3.展开的子目录指针列表
+        4.展开的子文件指针列表
+        5.迭代器
+        6.路径-指针字典
     */
     void build();
 
@@ -45,6 +47,9 @@ public:
     vector<file *>::iterator fileIter;          //展开的所有子文件指针列表迭代器
     vector<file *>::iterator fileIterBegin;     //展开的所有子文件指针列表迭代器：首端
     vector<file *>::iterator fileIterEnd;       //展开的所有子文件指针列表迭代器：末端
+
+    map<string, folder *> folderPathMap; //路径-目录指针 字典
+    map<string, file *> filePathMap;     //路径-文件指针 字典
 
     Tree(string irootPath);
     ~Tree();

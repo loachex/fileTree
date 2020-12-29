@@ -101,6 +101,18 @@ void Tree::build()
     //构建迭代器
     freshIterEdge();
     seekIter(ITER, IterBegin);
+    //构建路径-指针字典
+    while (folderIter != folderIterEnd)
+    {
+        folderPathMap.insert(pair<string, folder *>((*folderIter)->folderPath, *folderIter));
+        folderIter++;
+    }
+    while (fileIter != fileIterEnd)
+    {
+        filePathMap.insert(pair<string, file *>((*fileIter)->filePath, *fileIter));
+        fileIter++;
+    }
+    seekIter(ITER, IterBegin);
     //结果报告
     et = clock();
     cout << "Build finished in " << to_string((double)(et - st) / CLOCKS_PER_SEC) << "s" << endl;
@@ -127,6 +139,8 @@ void Tree::destory()
 
     vector<folder *>().swap(apflattenFolders);
     vector<file *>().swap(apflattenFiles);
+    map<string,folder *>().swap(folderPathMap);
+    map<string,file *>().swap(filePathMap);
 }
 
 void Tree::freshIterEdge()
@@ -154,7 +168,7 @@ void Tree::seekIter(int whichIter, int position)
             folderIter = folderIterEnd;
     }
 }
-file* Tree::nextFile(bool recycle = false)
+file *Tree::nextFile(bool recycle = false)
 {
     if (fileIter == fileIterEnd)
     {
@@ -164,14 +178,13 @@ file* Tree::nextFile(bool recycle = false)
         }
         else
         {
-            cout << "no more files" << endl;
             return NULL;
         }
     }
 
     return *(fileIter++);
 }
-folder* Tree::nextFolder(bool recycle = false)
+folder *Tree::nextFolder(bool recycle = false)
 {
     if (folderIter == folderIterEnd)
     {
@@ -181,7 +194,6 @@ folder* Tree::nextFolder(bool recycle = false)
         }
         else
         {
-            cout << "no more folders" << endl;
             return NULL;
         }
     }
