@@ -20,6 +20,11 @@ public:
     string fileName;//文件名称
     string format;//文件格式（后缀名）
 
+    map<string,int> intValueMap;
+    map<string,double> doubleValueMap;
+    map<string,char> charValueMap;
+    map<string,string> stringValueMap;
+
     bool _fit;//文件是否通过过滤器
 
     file(string ifilePath);

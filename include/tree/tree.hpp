@@ -12,6 +12,10 @@
 #define _H_STACK
 #endif
 
+#ifndef _H_FLITER
+#include "../../include/tree/fliter.hpp"
+#endif
+
 using namespace std;
 
 class Tree
