@@ -139,8 +139,8 @@ void Tree::destory()
 
     vector<folder *>().swap(apflattenFolders);
     vector<file *>().swap(apflattenFiles);
-    map<string,folder *>().swap(folderPathMap);
-    map<string,file *>().swap(filePathMap);
+    map<string, folder *>().swap(folderPathMap);
+    map<string, file *>().swap(filePathMap);
 }
 
 void Tree::freshIterEdge()
@@ -172,7 +172,7 @@ file *Tree::nextFile(bool recycle = false)
 {
     if (fileIter == fileIterEnd)
     {
-        if (recycle)
+        if (recycle && (*fileIter)->_fit) //防止出现死循环
         {
             seekIter(FILEITER, IterBegin);
         }
@@ -181,14 +181,25 @@ file *Tree::nextFile(bool recycle = false)
             return NULL;
         }
     }
+    while (!((*fileIter)->_fit))
+    {
+        if (fileIter == fileIterEnd)
+        {
+            return NULL;
+        }
+        else
+        {
+            fileIter++;
+        }
+    }
 
-    return *(fileIter++);
+    return *(fileIter++); //先return,再++（保证第一个数据也可以输出）
 }
 folder *Tree::nextFolder(bool recycle = false)
 {
     if (folderIter == folderIterEnd)
     {
-        if (recycle)
+        if (recycle && (*folderIter)->_fit) //防止出现死循环
         {
             seekIter(FOLDERITER, IterBegin);
         }
@@ -197,6 +208,17 @@ folder *Tree::nextFolder(bool recycle = false)
             return NULL;
         }
     }
+    while (!((*folderIter)->_fit))
+    {
+        if (folderIter == folderIterEnd)
+        {
+            return NULL;
+        }
+        else
+        {
+            folderIter++;
+        }
+    }
 
-    return *(folderIter++);
+    return *(folderIter++); //先return,再++（保证第一个数据也可以输出）
 }

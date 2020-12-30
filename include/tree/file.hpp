@@ -35,6 +35,6 @@ public:
     ~file();
 
     template <class T>
-    void addProperty(string item,T value);
+    void addProperty(string item,T value);//支持的值类型：int,double,string
     void delProperty(string item);
 };

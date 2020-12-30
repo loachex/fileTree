@@ -6,7 +6,7 @@ folder::folder(string Path, int depth)
     includeSubFoldersNum = 0;
 
     _ok = true;
-    _fit = 0;
+    _fit = true;
     _depth = depth;
     _unBuildSubFoldersNum = 0;
     _unBuildFileNum = 0;

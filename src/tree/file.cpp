@@ -31,3 +31,7 @@ void file::addProperty(string item, T value)
         break;
     }
 }
+void file::delProperty(string item)
+{
+
+}

@@ -5,6 +5,13 @@
 using namespace std;
 int main()
 {
-    fileFliter f(LOGIC_OR);
-    cout<<sizeof(f);
+    Tree t("/opt");
+    file *f;
+    int i = 0;
+    while ((f = t.nextFile(false)) != NULL)
+    {
+        cout << f->filePath << endl;
+        i++;
+    }
+    cout << i << endl;
 }
