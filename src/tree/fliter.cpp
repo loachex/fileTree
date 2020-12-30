@@ -54,7 +54,7 @@ bool fileFliter::cacuLogic(int resultArr[])
     int ran = 0;
     if (_or)
     {
-        for (ran = 0; ran < 8; ++ran)
+        for (ran = 0; ran < 6; ++ran)
         {
             if (resultArr[ran] == -1)
                 continue;
@@ -65,7 +65,7 @@ bool fileFliter::cacuLogic(int resultArr[])
     }
     else if (_and)
     {
-        for (ran = 0; ran < 8; ++ran)
+        for (ran = 0; ran < 6; ++ran)
         {
             if (resultArr[ran] == -1)
                 continue;
@@ -87,9 +87,6 @@ void fileFliter::addRule(string item, rule<T2> arule)
     case typeid(rule<double>).name():
         doubleRuleMap.insert(pair<string, rule<double>>(item, arule));
         break;
-    case typeid(rule<char>).name():
-        charRuleMap.insert(pair<string, rule<char>>(item, arule));
-        break;
     case typeid(rule<string>).name():
         stringRuleMap.insert(pair<string, rule<string>>(item, arule));
         break;
@@ -99,9 +96,6 @@ void fileFliter::addRule(string item, rule<T2> arule)
     case typeid(rule<vector<double>>).name():
         vdoubleRuleMap.insert(pair<string, rule<vector<double>>>(item, arule));
         break;
-    case typeid(rule<vector<char>>).name():
-        vcharRuleMap.insert(pair<string, rule<vector<char>>>(item, arule));
-        break;
     case typeid(rule<vector<string>>).name():
         vstringRuleMap.insert(pair<string, rule<vector<string>>>(item, arule));
         break;
@@ -109,7 +103,6 @@ void fileFliter::addRule(string item, rule<T2> arule)
         break;
     }
 }
-
 void fileFliter::delRule(string item)
 {
 }
@@ -142,19 +135,6 @@ bool fileFliter::fliter(file *f)
                 curResult.push_back(false);
         }
         result[1] = (cacuLogic(curResult)) ? 1 : 0;
-        curResult.clear();
-    }
-    if (!charRuleMap.empty())
-    {
-        map<string, rule<char>>::iterator charIter = charRuleMap.begin();
-        for (; charIter != charRuleMap.end(); charIter++)
-        {
-            if (charIter->second.func(f, charIter->second.standardValue))
-                curResult.push_back(true);
-            else
-                curResult.push_back(false);
-        }
-        result[2] = (cacuLogic(curResult)) ? 1 : 0;
         curResult.clear();
     }
     if (!stringRuleMap.empty())
@@ -196,19 +176,6 @@ bool fileFliter::fliter(file *f)
         result[5] = (cacuLogic(curResult)) ? 1 : 0;
         curResult.clear();
     }
-    if (!vcharRuleMap.empty())
-    {
-        map<string, rule<vector<char>>>::iterator vcharIter = vcharRuleMap.begin();
-        for (; vcharIter != vcharRuleMap.end(); vcharIter++)
-        {
-            if (vcharIter->second.func(f, vcharIter->second.standardValue))
-                curResult.push_back(true);
-            else
-                curResult.push_back(false);
-        }
-        result[6] = (cacuLogic(curResult)) ? 1 : 0;
-        curResult.clear();
-    }
     if (!vstringRuleMap.empty())
     {
         map<string, rule<vector<string>>>::iterator vstringIter = vstringRuleMap.begin();
@@ -223,5 +190,6 @@ bool fileFliter::fliter(file *f)
         curResult.clear();
     }
 
-    return cacuLogic(result);
+    f->_fit=cacuLogic(result);
+    return f->_fit;
 }

@@ -32,44 +32,48 @@ using namespace std;
 template <class T1>
 struct rule
 {
-    bool (*func)(file *f, T1 value);
-    T1 standardValue;
+    /*判断规则*/
+    bool (*func)(file *f, T1 value); //判断函数
+    T1 standardValue;                //标准值
 };
 
 class fileFliter
 {
 private:
-    bool _or;
-    bool _and;
-
+    /*过滤器逻辑参数*/
+    bool _or;  //并
+    bool _and; //与
 public:
-/*
-map<string,rule<T>
+    /*
+map<string,rule<T>:
+判断规则字典
     1.string:项目名称：必须是文件属性字典中的键，用于索引文件的值与标准值比较
     2.rule<T>规则模板，包含标准值和判断函数
 */
     map<string, rule<int>> intRuleMap;
     map<string, rule<double>> doubleRuleMap;
-    map<string, rule<char>> charRuleMap;
     map<string, rule<string>> stringRuleMap;
 
     map<string, rule<vector<int>>> vintRuleMap;
     map<string, rule<vector<double>>> vdoubleRuleMap;
-    map<string, rule<vector<char>>> vcharRuleMap;
     map<string, rule<vector<string>>> vstringRuleMap;
 
-    int result[8];//-1:过滤器未使用；0：false；1：true
+    //记录六个规则字典的判断结果数组
+    int result[6]; //-1:过滤器未使用；0：false；1：true
 
     fileFliter(int logic);
     ~fileFliter();
 
+    //逻辑学操作
     void reviseLogic();
     bool cacuLogic(vector<bool> resultVec);
     bool cacuLogic(int resultArr[]);
 
+    //增加、删除规则
     template <class T2>
     void addRule(string item, rule<T2> rule);
     void delRule(string item);
 
+    //过滤
     bool fliter(file *f);
 };

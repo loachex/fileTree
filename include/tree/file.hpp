@@ -11,6 +11,11 @@
 #include <map>
 #endif
 
+#ifndef _H_TYPEINFO
+#include <typeinfo>
+#define _H_TYPEINFO
+#endif
+
 using namespace std;
 
 class file
@@ -22,11 +27,14 @@ public:
 
     map<string,int> intValueMap;
     map<string,double> doubleValueMap;
-    map<string,char> charValueMap;
     map<string,string> stringValueMap;
 
     bool _fit;//文件是否通过过滤器
 
     file(string ifilePath);
     ~file();
+
+    template <class T>
+    void addProperty(string item,T value);
+    void delProperty(string item);
 };
