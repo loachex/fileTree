@@ -48,6 +48,7 @@ bool fileFliter::cacuLogic(vector<bool> results)
             return true;
         }
     }
+    return NULL;
 }
 bool fileFliter::cacuLogic(int resultArr[])
 {
@@ -73,6 +74,8 @@ bool fileFliter::cacuLogic(int resultArr[])
         }
         return true;
     }
+
+    return NULL;
 }
 
 template <class T2>
