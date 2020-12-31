@@ -103,6 +103,28 @@ void fileFliter::addVStringRule(string item, rule<vector<string>> arule)
 {
     vstringRuleMap[item] = arule;
 }
+void fileFliter::delRule(string item)
+{
+    map<string, rule<int>>::iterator iIter = intRuleMap.find(item);
+    map<string, rule<double>>::iterator dIter = doubleRuleMap.find(item);
+    map<string, rule<string>>::iterator sIter = stringRuleMap.find(item);
+    map<string, rule<vector<int>>>::iterator viIter = vintRuleMap.find(item);
+    map<string, rule<vector<double>>>::iterator vdIter = vdoubleRuleMap.find(item);
+    map<string, rule<vector<string>>>::iterator vsIter = vstringRuleMap.find(item);
+
+    if (iIter != intRuleMap.end())
+        intRuleMap.erase(iIter);
+    if (dIter != doubleRuleMap.end())
+        doubleRuleMap.erase(dIter);
+    if (sIter != stringRuleMap.end())
+        stringRuleMap.erase(sIter);
+    if (viIter != vintRuleMap.end())
+        vintRuleMap.erase(viIter);
+    if (vdIter != vdoubleRuleMap.end())
+        vdoubleRuleMap.erase(vdIter);
+    if (vsIter != vstringRuleMap.end())
+        vstringRuleMap.erase(vsIter);
+}
 
 bool fileFliter::fliter(file *f)
 {

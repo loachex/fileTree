@@ -78,6 +78,8 @@ map<string,rule<T>:
     void addVDoubleRule(string item, rule<vector<double>> arule);
     void addVStringRule(string item, rule<vector<string>> arule);
 
+    void delRule(string item);
+
     //过滤
     bool fliter(file *f);
 };
