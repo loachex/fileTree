@@ -6,41 +6,23 @@ using namespace std;
 
 bool func(file *f, string value)
 {
-    if (f->fileName == value)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-bool func2(file *f, string value)
-{
-    if (f->filePath == value)
+    if (f->findStringProperty("format") == value)
         return true;
     else
         return false;
 }
+
 int main()
 {
-    /*
-    Tree t("/home/loachex/prog/cpp/proj/fileTree/src");
-    file *f1;
+    string path = "/media/loachex/SGS 1T/1";
+    Tree *t = new Tree(path);
+    cout << "ok" << endl;
 
-    fileFliter<string> filefs1(LOGIC_NOT);
-    rule<string> r1{func, "main.cpp"};
-    rule<string> r2{func2, "/hoe/loachex/prog/cpp/proj/fileTree/src/main/main.cpp"};
-    filefs1.addRule("filename", r1);
-    filefs1.addRule("filepath", r2);
-
-    while ((f1 = t.nextFile(false)) != NULL)
+    t->stringFileFliter.addRule("format", func, "jpg");
+    t->fliter();
+    file *f;
+    while ((f = t->nextFile(false)) != NULL)
     {
-        bool result = filefs1.fliter(f1);
-        if (result)
-            cout << f1->fileName << endl;
+        cout << f->filePath << " 共计：" << to_string(t->stringFileFliter.fitNum) << endl;
     }
-    */
-   file f("/home/loachex/prog/cpp/proj/fileTree/src/main/main.cpp");
-   
 }

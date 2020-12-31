@@ -28,16 +28,16 @@
 
 using namespace std;
 
-vector<string>split(string s,char c);
+vector<string> split(string s, char c);
 
 string dirPath(string path);
 
 string joinPath(string path1, string path2);
-string joinPath(string path1,char *path2);
-string joinPath(char *path1,char *path2);
+string joinPath(string path1, char *path2);
+string joinPath(char *path1, char *path2);
 string joinPath(vector<string> paths);
 
-string getFormat(string fileName);
+string getFormat(string fileName); //获取文件格式（拓展名）（例：abc.txt->txt）
 
 bool isFile(string Path);
 bool isFolder(string Path);

@@ -183,14 +183,9 @@ file *Tree::nextFile(bool recycle = false)
     }
     while (!((*fileIter)->_fit))
     {
+        fileIter++;
         if (fileIter == fileIterEnd)
-        {
             return NULL;
-        }
-        else
-        {
-            fileIter++;
-        }
     }
 
     return *(fileIter++); //先return,再++（保证第一个数据也可以输出）
@@ -210,15 +205,26 @@ folder *Tree::nextFolder(bool recycle = false)
     }
     while (!((*folderIter)->_fit))
     {
+        folderIter++;
         if (folderIter == folderIterEnd)
-        {
             return NULL;
-        }
-        else
-        {
-            folderIter++;
-        }
     }
 
     return *(folderIter++); //先return,再++（保证第一个数据也可以输出）
+}
+
+void Tree::fliter()
+{
+    //过滤文件
+    file *cachefile;
+    while ((cachefile = nextFile(false)) != NULL)
+    {
+        if (!intFileFliter.RuleMap.empty())
+            intFileFliter.fliter(cachefile);
+        if (!doubleFileFliter.RuleMap.empty())
+            doubleFileFliter.fliter(cachefile);
+        if (!stringFileFliter.RuleMap.empty())
+            stringFileFliter.fliter(cachefile);
+    }
+    seekIter(ITER, IterBegin);
 }

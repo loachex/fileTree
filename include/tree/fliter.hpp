@@ -49,7 +49,21 @@ private:
     bool _and; //与
     bool _not; //非
 
+    //初始化逻辑
+    void initLogic()
+    {
+        _or = _and = _not = false;
+    }
+    //初始化计数
+    void initNum()
+    {
+        fitNum = unfitNum = 0;
+    }
+
 public:
+    int fitNum;
+    int unfitNum;
+
     map<string, rule<T>> RuleMap;
     vector<bool> results;
 
@@ -59,23 +73,24 @@ public:
         _or = false;
         _and = true;
         _not = false;
+
+        initNum();
     }
     fileFliter(int logic)
     {
         //采用指定的方式
         initLogic();
         reviseLogic(logic);
+
+        initNum();
     }
     ~fileFliter(){};
 
     //逻辑学操作
-    void initLogic()
-    {
-        _or = _and = _not = false;
-    }
     void reviseLogic(int logic)
     {
         initLogic();
+        initNum();
         switch (logic)
         {
         case LOGIC_OR:
@@ -130,12 +145,14 @@ public:
     {
         //增加规则，项目重名时替换规则
         RuleMap[item] = arule;
+        initNum();
     }
     void addRule(string item, bool (*func)(file *f, T value), T standardValue)
     {
         //直接输入项目名、判断函数与标准值，添加规则
         rule<T> r{func, standardValue};
         RuleMap[item] = r;
+        initNum();
     }
     void delRule(string item)
     {
@@ -143,6 +160,7 @@ public:
         typename map<string, rule<T>>::iterator iter = RuleMap.find(item);
         if (iter != RuleMap.end())
             RuleMap.erase(iter);
+        initNum();
     }
     //过滤
     bool fliter(file *f)
@@ -162,6 +180,10 @@ public:
             }
         }
         f->_fit = cacuLogic(results);
+        if (f->_fit)
+            fitNum++;
+        else
+            unfitNum++;
         return f->_fit;
     }
 };

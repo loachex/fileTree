@@ -55,10 +55,14 @@ public:
     map<string, folder *> folderPathMap; //路径-目录指针 字典
     map<string, file *> filePathMap;     //路径-文件指针 字典
 
+    fileFliter<int> intFileFliter;       //文件int过滤器
+    fileFliter<double> doubleFileFliter; //文件double过滤器
+    fileFliter<string> stringFileFliter; //文件string过滤器
+
     Tree(string irootPath);
     ~Tree();
 
-/*迭代器操作*/
+    /*迭代器操作*/
 #define ITER 0
 #define FILEITER 1
 #define FOLDERITER 2
@@ -69,4 +73,7 @@ public:
     void seekIter(int whichIter, int position); //定位迭代器位置：whichIter
     file *nextFile(bool recycle);               //返回下一个文件指针，当达到末尾时自动循环或者停止
     folder *nextFolder(bool recycle);           //返回下一个文件夹指针，当达到末尾时自动循环或者停止
+
+    /*过滤器操作:操作类型默认为逻辑与，即三种过滤器都通过才设定为fit*/
+    void fliter();
 };

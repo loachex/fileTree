@@ -38,7 +38,8 @@ public:
         _fit = true;
 
         //添加文件基本属性
-        addStringProperty("format", getFormat(fileName));
+        string format=getFormat(fileName);
+        addStringProperty("format", format);
     }
     ~file() {}
 
