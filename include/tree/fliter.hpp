@@ -29,14 +29,15 @@
 
 using namespace std;
 
-template <class T1>
+template <class T>
 struct rule
 {
     /*判断规则*/
-    bool (*func)(file *f, T1 value); //判断函数
-    T1 standardValue;                //标准值
+    bool (*func)(file *f, T value); //判断函数
+    T standardValue;               //标准值
 };
 
+template <class T>
 class fileFliter
 {
 private:
@@ -51,35 +52,85 @@ map<string,rule<T>:
     1.string:项目名称：必须是文件属性字典中的键，用于索引文件的值与标准值比较
     2.rule<T>规则模板，包含标准值和判断函数
 */
-    map<string, rule<int>> intRuleMap;
-    map<string, rule<double>> doubleRuleMap;
-    map<string, rule<string>> stringRuleMap;
+    map<string, rule<T>> RuleMap;
+    vector<bool> results;
 
-    map<string, rule<vector<int>>> vintRuleMap;
-    map<string, rule<vector<double>>> vdoubleRuleMap;
-    map<string, rule<vector<string>>> vstringRuleMap;
-
-    //记录六个规则字典的判断结果数组
-    int result[6]; //-1:过滤器未使用；0：false；1：true
-
-    fileFliter(int logic);
+    fileFliter(int logic)
+    {
+        if (logic == LOGIC_OR)
+        {
+            _or = true;
+            _and = false;
+        }
+        else if (logic == LOGIC_AND)
+        {
+            _or = false;
+            _and = true;
+        }
+    }
     ~fileFliter();
 
     //逻辑学操作
-    void reviseLogic();
-    bool cacuLogic(vector<bool> resultVec);
-    bool cacuLogic(int resultArr[]);
+    void reviseLogic()
+    {
+        _or = !_or;
+        _and = !_and;
+
+        result[8] = {-1};
+    }
+    bool cacuLogic(vector<bool> resultVec)
+    {
+        vector<bool>::iterator iter = results.begin();
+        if (_or)
+        {
+            for (; iter != results.end(); iter++)
+            {
+                if (*iter)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        else if (_and)
+        {
+            for (; iter != results.end(); iter++)
+            {
+                if (!*iter)
+                {
+                    return false;
+                }
+                return true;
+            }
+        }
+        return NULL;
+    }
 
     //增加、删除规则
-    void addIntRule(string item, rule<int> arule);
-    void addDoubleRule(string item, rule<double> arule);
-    void addStringRule(string item, rule<string> arule);
-    void addVIntRule(string item, rule<vector<int>> arule);
-    void addVDoubleRule(string item, rule<vector<double>> arule);
-    void addVStringRule(string item, rule<vector<string>> arule);
-
-    void delRule(string item);
-
+    void addRule(string item, rule<T> arule)
+    {
+        RuleMap[item] = arule;
+    }
+    void delRule(string item)
+    {
+        map<string, rule<T>>::iterator iter = RuleMap.find(item);
+        if (iter != RuleMap.end())
+            RuleMap.erase(iter);
+    }
     //过滤
-    bool fliter(file *f);
+    bool fliter(file *f)
+    {
+        if (!RuleMap.empty())
+        {
+            map<string, rule<T>>::iterator iter = RuleMap.begin();
+            for (; iter != RuleMap.end(); iter++)
+            {
+                if (iter->second.func(f, iter->second.standardValue))
+                    results.push_back(true);
+                else
+                    results.push_back(false);
+            }
+        }
+        return cacuLogic(results);
+    }
 };
