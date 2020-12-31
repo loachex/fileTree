@@ -40,9 +40,10 @@ struct rule
 class fileFliter
 {
 private:
-    /*过滤器逻辑参数*/
+    //逻辑学操作
     bool _or;  //并
     bool _and; //与
+
 public:
     /*
 map<string,rule<T>:
@@ -70,9 +71,12 @@ map<string,rule<T>:
     bool cacuLogic(int resultArr[]);
 
     //增加、删除规则
-    template <class T2>
-    void addRule(string item, rule<T2> rule);
-    void delRule(string item);
+    void addIntRule(string item, rule<int> arule);
+    void addDoubleRule(string item, rule<double> arule);
+    void addStringRule(string item, rule<string> arule);
+    void addVIntRule(string item, rule<vector<int>> arule);
+    void addVDoubleRule(string item, rule<vector<double>> arule);
+    void addVStringRule(string item, rule<vector<string>> arule);
 
     //过滤
     bool fliter(file *f);

@@ -70,7 +70,8 @@ bool fileFliter::cacuLogic(int resultArr[])
         {
             if (resultArr[ran] == -1)
                 continue;
-            else if (!resultArr[ran])return false;
+            else if (!resultArr[ran])
+                return false;
         }
         return true;
     }
@@ -78,36 +79,29 @@ bool fileFliter::cacuLogic(int resultArr[])
     return NULL;
 }
 
-template <class T2>
-void fileFliter::addRule(string item, rule<T2> arule)
+void fileFliter::addIntRule(string item, rule<int> arule)
 {
-    string itype = typeid(arule).name();
-    switch (itype)
-    {
-    case typeid(rule<int>).name():
-        intRuleMap.insert(pair<string, rule<int>>(item, arule));
-        break;
-    case typeid(rule<double>).name():
-        doubleRuleMap.insert(pair<string, rule<double>>(item, arule));
-        break;
-    case typeid(rule<string>).name():
-        stringRuleMap.insert(pair<string, rule<string>>(item, arule));
-        break;
-    case typeid(rule<vector<int>>).name():
-        vintRuleMap.insert(pair<string, rule<vector<int>>>(item, arule));
-        break;
-    case typeid(rule<vector<double>>).name():
-        vdoubleRuleMap.insert(pair<string, rule<vector<double>>>(item, arule));
-        break;
-    case typeid(rule<vector<string>>).name():
-        vstringRuleMap.insert(pair<string, rule<vector<string>>>(item, arule));
-        break;
-    default:
-        break;
-    }
+    intRuleMap[item] = arule;
 }
-void fileFliter::delRule(string item)
+void fileFliter::addDoubleRule(string item, rule<double> arule)
 {
+    doubleRuleMap[item] = arule;
+}
+void fileFliter::addStringRule(string item, rule<string> arule)
+{
+    stringRuleMap[item] = arule;
+}
+void fileFliter::addVIntRule(string item, rule<vector<int>> arule)
+{
+    vintRuleMap[item] = arule;
+}
+void fileFliter::addVDoubleRule(string item, rule<vector<double>> arule)
+{
+    vdoubleRuleMap[item] = arule;
+}
+void fileFliter::addVStringRule(string item, rule<vector<string>> arule)
+{
+    vstringRuleMap[item] = arule;
 }
 
 bool fileFliter::fliter(file *f)
@@ -193,6 +187,6 @@ bool fileFliter::fliter(file *f)
         curResult.clear();
     }
 
-    f->_fit=cacuLogic(result);
+    f->_fit = cacuLogic(result);
     return f->_fit;
 }

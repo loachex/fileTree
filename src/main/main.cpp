@@ -3,15 +3,22 @@
 
 #include <typeinfo>
 using namespace std;
+
+bool func(file *f, string value)
+{
+    if (f->fileName == value)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
 int main()
 {
-    Tree t("/opt");
-    file *f;
-    int i = 0;
-    while ((f = t.nextFile(false)) != NULL)
-    {
-        cout << f->filePath << endl;
-        i++;
-    }
-    cout << i << endl;
+    fileFliter ff(LOGIC_AND);
+    string item="name";
+    rule<string> r1{func,"fliter.cpp"};
+    ff.addStringRule(item,r1);
 }
