@@ -24,6 +24,7 @@ bool func2(file *f, string value)
 }
 int main()
 {
+    /*
     Tree t("/home/loachex/prog/cpp/proj/fileTree/src");
     file *f1;
 
@@ -39,4 +40,7 @@ int main()
         if (result)
             cout << f1->fileName << endl;
     }
+    */
+   file f("/home/loachex/prog/cpp/proj/fileTree/src/main/main.cpp");
+   
 }

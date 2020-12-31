@@ -161,6 +161,7 @@ public:
                     results.push_back(false);
             }
         }
-        return cacuLogic(results);
+        f->_fit = cacuLogic(results);
+        return f->_fit;
     }
 };
