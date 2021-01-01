@@ -4,17 +4,12 @@
 #include <typeinfo>
 using namespace std;
 
-void filter_func(vector<file *> vf)
+void process_func(vector<file *> vf)
 {
     for (int i = 0; i < vf.size(); ++i)
     {
         cout << vf[i]->fileName << endl;
     }
-}
-
-void process_func(file *f)
-{
-    cout << "File name:" << f->fileName << endl;
 }
 
 int main()
@@ -23,5 +18,5 @@ int main()
     Tree *t = new Tree(path);
     int i = 0;
     double *j;
-    t->MfileProcess(filter_func,30);
+    t->MfileProcess(process_func,30);
 }
