@@ -4,19 +4,23 @@
 #include <typeinfo>
 using namespace std;
 
-void process_func(vector<file *> vf)
+mutex mtx;
+void process_func(fileArgs<int, vector<string>> fs)
 {
-    for (int i = 0; i < vf.size(); ++i)
+    for (int i = 0; i < fs.vf.size(); ++i)
     {
-        cout << vf[i]->fileName << endl;
+        mtx.lock();
+        fs.result->push_back(fs.vf[i]->filePath);
+        cout << to_string(fs.result->size()) << "/" << fs.args << endl;
+        mtx.unlock();
     }
 }
 
 int main()
 {
+    vector<string> *v = new vector<string>();//result一定要初始化
     string path = "/media/loachex/SGS 1T/1";
     Tree *t = new Tree(path);
-    int i = 0;
-    double *j;
-    t->MfileProcess(process_func,30);
+
+    t->MfileProcess(process_func, t->fitFileNum, v, 30);
 }

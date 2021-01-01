@@ -30,11 +30,12 @@
 
 using namespace std;
 
-template <class T1>
+template <class argsType, class presultType>
 struct fileArgs
 {
     vector<file *> vf;
-    T1 *result;
+    argsType args;
+    presultType *result;
 };
 
 class Tree
@@ -54,6 +55,7 @@ private:
     void destory();
 
     //处理器操作
+    void buildfileTaskPool(int threadNum);
 
 public:
     int depth;            //树的深度
@@ -146,16 +148,71 @@ public:
     }
 
     //多线程
-    void buildfileTaskPool(int threadNum);
-
+    /*使用多线程处理文件或者目录
+    void func:处理函数,参数列表见MfProcess
+    args:要传入处理函数的参数
+    *result：结果记录列表指针，一定要使用new在堆上初始化，并且在调用处定义mutex锁，在处理函数中对涉及result的部分加锁
+    threadNum:线程数量*/
+    shared_ptr<mutex> mtx;
     void MfileProcess(void (*func)(vector<file *> vf), int threadNum)
     {
-        //！在func中一定对result加锁！
         buildfileTaskPool(threadNum);
         for (int fTPN = 0; fTPN < fileTaskPool.size(); fTPN++)
         {
             threadPool.push_back(thread(func, fileTaskPool[fTPN]));
-            cout << "Thread:" << to_string(fTPN) << " Start.";
+            cout << "Thread:" << to_string(fTPN) << " Start." << endl;
+        }
+        for (int tPN = 0; tPN < threadPool.size(); tPN++)
+        {
+            threadPool[tPN].join();
+        }
+    }
+    template <class T1, class T2>
+    void MfileProcess(void (*func)(fileArgs<T1, T2> fas), T1 args, T2 *result, int threadNum)
+    {
+        // result一定要用new初始化
+        //！在func中一定对result加锁！
+        buildfileTaskPool(threadNum);
+        fileArgs<T1, T2> fas;
+        for (int fTPN = 0; fTPN < fileTaskPool.size(); fTPN++)
+        {
+            fas = {fileTaskPool[fTPN], args, result};
+            threadPool.push_back(thread(func, fas));
+            cout << "Thread:" << to_string(fTPN) << " Start." << endl;
+        }
+        for (int tPN = 0; tPN < threadPool.size(); tPN++)
+        {
+            threadPool[tPN].join();
+        }
+    }
+    template <class T1>
+    void MfileProcess(void (*func)(fileArgs<void, T1> fas), T1 *result, int threadNum)
+    {
+        // result一定要用new初始化
+        //！在func中一定对result加锁！
+        buildfileTaskPool(threadNum);
+        fileArgs<void, T1> fas;
+        for (int fTPN = 0; fTPN < fileTaskPool.size(); fTPN++)
+        {
+            fas = {fileTaskPool[fTPN], NULL, result};
+            threadPool.push_back(thread(func, fas));
+            cout << "Thread:" << to_string(fTPN) << " Start." << endl;
+        }
+        for (int tPN = 0; tPN < threadPool.size(); tPN++)
+        {
+            threadPool[tPN].join();
+        }
+    }
+    template <class T1>
+    void MfileProcess(void (*func)(fileArgs<T1, void> fas), T1 args, int threadNum)
+    {
+        buildfileTaskPool(threadNum);
+        fileArgs<T1, void> fas;
+        for (int fTPN = 0; fTPN < fileTaskPool.size(); fTPN++)
+        {
+            fas = {fileTaskPool[fTPN], args, NULL};
+            threadPool.push_back(thread(func, fas));
+            cout << "Thread:" << to_string(fTPN) << " Start." << endl;
         }
         for (int tPN = 0; tPN < threadPool.size(); tPN++)
         {
