@@ -271,8 +271,8 @@ void Tree::fliter()
             doubleFileFliter.fliter(cachefile);
         if (!stringFileFliter.RuleMap.empty())
             stringFileFliter.fliter(cachefile);
-        if (cachefile->_fit)
-            fitFileNum++;
+        if (!cachefile->_fit)
+            fitFileNum--;
     }
     seekIter(ITER, IterBegin);
 
