@@ -183,6 +183,7 @@ file *Tree::nextFile(bool recycle = false)
         }
         else
         {
+            seekIter(FILEITER, IterBegin);//重置指针
             return NULL;
         }
     }
@@ -192,6 +193,7 @@ file *Tree::nextFile(bool recycle = false)
         {
             fileIter++;
             if (fileIter == fileIterEnd)
+            seekIter(FILEITER, IterBegin);//重置指针
                 return NULL;
         }
     }
@@ -208,6 +210,7 @@ folder *Tree::nextFolder(bool recycle = false)
         }
         else
         {
+         seekIter(FILEITER, IterBegin);//重置指针
             return NULL;
         }
     }
@@ -217,6 +220,7 @@ folder *Tree::nextFolder(bool recycle = false)
         {
             folderIter++;
             if (folderIter == folderIterEnd)
+             seekIter(FILEITER, IterBegin);//重置指针
                 return NULL;
         }
     }
