@@ -5,6 +5,7 @@ project(fileTree)
 #添加宏：DEBUG
 #add_definitions(-DDEBUG)
 #包含头文件库
+set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -march=native -O3 -pthread" )
 include_directories(./include)
 #添加源文件
 aux_source_directory(./src/main SRCS)

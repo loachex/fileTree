@@ -17,6 +17,8 @@ Tree::Tree(string irootPath)
         cout << "Please check the path of rootFolder." << endl;
         return;
     }
+    //过滤器初始化
+    useFliter = true;
     //构建
     build();
 }
@@ -113,6 +115,9 @@ void Tree::build()
         fileIter++;
     }
     seekIter(ITER, IterBegin);
+    //构建过滤器
+    fitFolderNum = apflattenFolders.size();
+    fitFileNum = apflattenFiles.size();
     //结果报告
     et = clock();
     cout << "Build finished in " << to_string((double)(et - st) / CLOCKS_PER_SEC) << "s" << endl;
@@ -181,11 +186,14 @@ file *Tree::nextFile(bool recycle = false)
             return NULL;
         }
     }
-    while (!((*fileIter)->_fit))
+    if (useFliter)
     {
-        fileIter++;
-        if (fileIter == fileIterEnd)
-            return NULL;
+        while (!((*fileIter)->_fit))
+        {
+            fileIter++;
+            if (fileIter == fileIterEnd)
+                return NULL;
+        }
     }
 
     return *(fileIter++); //先return,再++（保证第一个数据也可以输出）
@@ -203,18 +211,48 @@ folder *Tree::nextFolder(bool recycle = false)
             return NULL;
         }
     }
-    while (!((*folderIter)->_fit))
+    if (useFliter)
     {
-        folderIter++;
-        if (folderIter == folderIterEnd)
-            return NULL;
+        while (!((*folderIter)->_fit))
+        {
+            folderIter++;
+            if (folderIter == folderIterEnd)
+                return NULL;
+        }
     }
 
     return *(folderIter++); //先return,再++（保证第一个数据也可以输出）
 }
 
+void Tree::initFliter()
+{
+    //重置过滤结果
+    seekIter(ITER, IterBegin);
+    fitFileNum = apflattenFiles.size();
+    fitFolderNum = apflattenFolders.size();
+    //重置文件过滤结果
+    for (; fileIter != fileIterEnd; fileIter++)
+    {
+        (*fileIter)->_fit = true;
+    }
+    //重置目录过滤结果
+    for (; folderIter != folderIterEnd; folderIter++)
+    {
+        (*folderIter)->_fit = true;
+    }
+    seekIter(ITER, IterBegin);
+}
+void Tree::closeFliter()
+{
+    useFliter = false;
+}
+void Tree::openFilter()
+{
+    useFliter = true;
+}
 void Tree::fliter()
 {
+    initFliter();
     //过滤文件
     file *cachefile;
     while ((cachefile = nextFile(false)) != NULL)
@@ -225,6 +263,31 @@ void Tree::fliter()
             doubleFileFliter.fliter(cachefile);
         if (!stringFileFliter.RuleMap.empty())
             stringFileFliter.fliter(cachefile);
+        if (cachefile->_fit)
+            fitFileNum++;
     }
     seekIter(ITER, IterBegin);
+
+    //过滤目录
+}
+
+void Tree::buildfileTaskPool(int threadNum)
+{
+    seekIter(FILEITER, IterBegin);
+    vector<file *> curvTask; //当前任务列表
+    file *curfile;
+    int taskNumPerV = fitFileNum / threadNum;
+    int vNum = 0;
+
+    while ((curfile = nextFile(false)) != NULL)
+    {            
+        curvTask.push_back(curfile);
+        if (curvTask.size() >= taskNumPerV && vNum != threadNum - 1)
+        {
+            fileTaskPool.push_back(curvTask);
+            curvTask.clear();
+            ++vNum;
+        }
+    }
+    fileTaskPool.push_back(curvTask);
 }

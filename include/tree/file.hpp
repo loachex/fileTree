@@ -1,6 +1,6 @@
-#include <iostream>
-
 #define _H_FILE
+
+#include <iostream>
 
 #ifndef _H_PATH
 #include "path.hpp"
