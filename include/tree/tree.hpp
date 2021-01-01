@@ -153,7 +153,6 @@ public:
     args:要传入处理函数的参数
     *result：结果记录列表指针，一定要使用new在堆上初始化，并且在调用处定义mutex锁，在处理函数中对涉及result的部分加锁
     threadNum:线程数量*/
-    shared_ptr<mutex> mtx;
     void MfileProcess(void (*func)(vector<file *> vf), int threadNum)
     {
         buildfileTaskPool(threadNum);
