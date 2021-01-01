@@ -183,7 +183,7 @@ file *Tree::nextFile(bool recycle = false)
         }
         else
         {
-            seekIter(FILEITER, IterBegin);//重置指针
+            seekIter(FILEITER, IterBegin); //重置指针
             return NULL;
         }
     }
@@ -193,8 +193,10 @@ file *Tree::nextFile(bool recycle = false)
         {
             fileIter++;
             if (fileIter == fileIterEnd)
-            seekIter(FILEITER, IterBegin);//重置指针
+            {
+                seekIter(FILEITER, IterBegin); //重置指针
                 return NULL;
+            }
         }
     }
 
@@ -210,7 +212,7 @@ folder *Tree::nextFolder(bool recycle = false)
         }
         else
         {
-         seekIter(FILEITER, IterBegin);//重置指针
+            seekIter(FILEITER, IterBegin); //重置指针
             return NULL;
         }
     }
@@ -220,8 +222,10 @@ folder *Tree::nextFolder(bool recycle = false)
         {
             folderIter++;
             if (folderIter == folderIterEnd)
-             seekIter(FILEITER, IterBegin);//重置指针
+            {
+                seekIter(FILEITER, IterBegin); //重置指针
                 return NULL;
+            }
         }
     }
 
@@ -284,7 +288,7 @@ void Tree::buildfileTaskPool(int threadNum)
     int vNum = 0;
 
     while ((curfile = nextFile(false)) != NULL)
-    {            
+    {
         curvTask.push_back(curfile);
         if (curvTask.size() >= taskNumPerV && vNum != threadNum - 1)
         {
