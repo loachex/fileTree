@@ -31,6 +31,17 @@ double ave(cv::Mat m)
     }
     return mat_ave / double(r);
 }
+double aveV(vector<double> v)
+{
+    int i = 0;
+    double sum;
+    for (i = 0; i < v.size(); ++i)
+    {
+        sum += v[i];
+    }
+
+    return sum / v.size();
+}
 void processFunc(fileArgs<int, vector<double>> fas)
 {
     string curImgPath;
@@ -39,20 +50,23 @@ void processFunc(fileArgs<int, vector<double>> fas)
     for (int i = 0; i < fas.vf.size(); i++)
     {
         curImgPath = fas.vf[i]->filePath;
-        img = cv::imread(curImgPath);
+        img = cv::imread(curImgPath, CV_LOAD_IMAGE_GRAYSCALE);
         aveResult = ave(img);
 
         mtx.lock();
         fas.result->push_back(aveResult);
-        cout << to_string(fas.result->size()) << "/" << fas.args << endl;
+        cout << "img:" << to_string(fas.result->size()) << "/" << fas.args << " ave:" << aveResult << endl;
         mtx.unlock();
     }
 }
 
 int main(int argc, char *argv[])
 {
+    time_t st, et;
+    st = clock();
+
     vector<double> *resultV = new vector<double>();
-    string path = "/media/loachex/SGS 1T/1/游戏";
+    string path = "/media/loachex/WD 500G/imgAnalyse";
 
     Tree *t = new Tree(path);
     t->stringFileFliter.addRule("format_jpg", fliterFunc_format, "jpg");
@@ -64,7 +78,10 @@ int main(int argc, char *argv[])
     t->stringFileFliter.reviseLogic(LOGIC_OR);
     t->fliter();
 
-    t->MfileProcess(processFunc, t->fitFileNum, resultV, 5);
-    
+    t->MfileProcess(processFunc, t->fitFileNum, resultV, 8);
+    cout << "IMG average gray scale:" << to_string(aveV(*resultV)) << endl;
+    et = clock();
+
+    cout << "Cost time:" << to_string((et - st) / CLOCKS_PER_SEC) << " s" << endl;
     return 0;
 }
