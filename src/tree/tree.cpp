@@ -299,3 +299,23 @@ void Tree::buildfileTaskPool(int threadNum)
     }
     fileTaskPool.push_back(curvTask);
 }
+void Tree::buildfolderTaskPool(int threadNum)
+{
+    seekIter(FOLDERITER, IterBegin);
+    vector<folder *> curvTask; //当前任务列表
+    folder *curfolder;
+    int taskNumPerV = fitFolderNum / threadNum;
+    int vNum = 0;
+
+    while ((curfolder = nextFolder(false)) != NULL)
+    {
+        curvTask.push_back(curfolder);
+        if (curvTask.size() >= taskNumPerV && vNum != threadNum - 1)
+        {
+            folderTaskPool.push_back(curvTask);
+            curvTask.clear();
+            ++vNum;
+        }
+    }
+    folderTaskPool.push_back(curvTask);
+}

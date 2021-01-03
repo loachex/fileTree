@@ -38,6 +38,14 @@ struct fileArgs
     presultType *result;
 };
 
+template <class argsType, class presultType>
+struct folderArgs
+{
+    vector<folder *> vf;
+    argsType args;
+    presultType *result;
+};
+
 class Tree
 {
 private:
@@ -56,6 +64,7 @@ private:
 
     //处理器操作
     void buildfileTaskPool(int threadNum);
+    void buildfolderTaskPool(int threadNum);
 
 public:
     int depth;            //树的深度
@@ -85,8 +94,9 @@ public:
     fileFliter<double> doubleFileFliter; //文件double过滤器
     fileFliter<string> stringFileFliter; //文件string过滤器
 
-    vector<thread> threadPool;           //（简易的）线程池
-    vector<vector<file *>> fileTaskPool; //文件任务池
+    vector<thread> threadPool;               //（简易的）线程池
+    vector<vector<file *>> fileTaskPool;     //文件任务池
+    vector<vector<folder *>> folderTaskPool; //目录任务池
     //构建与析构
     Tree(string irootPath);
     ~Tree();
@@ -147,6 +157,42 @@ public:
         }
     }
 
+    template <class T1, class T2>
+    void folderProcess(void (*func)(folder *f, T1 args, T2 &result), T1 args, T2 &result)
+    {
+        folder *curfolder;
+        while ((curfolder = nextFolder(false)) != NULL)
+        {
+            func(curfolder, args, result);
+        }
+    }
+    template <class T1>
+    void folderProcess(void (*func)(folder *f, T1 args), T1 args)
+    {
+        folder *curfolder;
+        while ((curfolder = nextFolder(false)) != NULL)
+        {
+            func(curfolder, args);
+        }
+    }
+    template <class T1>
+    void folderProcess(void (*func)(folder *f, T1 &result), T1 &result)
+    {
+        folder *curfolder;
+        while ((curfolder = nextFolder(false)) != NULL)
+        {
+            func(curfolder, result);
+        }
+    }
+    void folderProcess(void (*func)(folder *f))
+    {
+        folder *curfolder;
+        while ((curfolder = nextFolder(false)) != NULL)
+        {
+            func(curfolder);
+        }
+    }
+
     //多线程
     /*使用多线程处理文件或者目录
     void func:处理函数,参数列表见MfProcess
@@ -165,6 +211,7 @@ public:
         {
             threadPool[tPN].join();
         }
+        vector<thread>().swap(threadPool);
     }
     template <class T1, class T2>
     void MfileProcess(void (*func)(fileArgs<T1, T2> fas), T1 args, T2 *result, int threadNum)
@@ -183,6 +230,7 @@ public:
         {
             threadPool[tPN].join();
         }
+        vector<thread>().swap(threadPool);
     }
     template <class T1>
     void MfileProcess(void (*func)(fileArgs<void, T1> fas), T1 *result, int threadNum)
@@ -201,6 +249,7 @@ public:
         {
             threadPool[tPN].join();
         }
+        vector<thread>().swap(threadPool);
     }
     template <class T1>
     void MfileProcess(void (*func)(fileArgs<T1, void> fas), T1 args, int threadNum)
@@ -217,5 +266,76 @@ public:
         {
             threadPool[tPN].join();
         }
+        vector<thread>().swap(threadPool);
+    }
+
+    void MfolderProcess(void (*func)(vector<folder *> vf), int threadNum)
+    {
+        buildfolderTaskPool(threadNum);
+        for (int fTPN = 0; fTPN < folderTaskPool.size(); fTPN++)
+        {
+            threadPool.push_back(thread(func, folderTaskPool[fTPN]));
+            cout << "Thread:" << to_string(fTPN) << " Start." << endl;
+        }
+        for (int tPN = 0; tPN < threadPool.size(); tPN++)
+        {
+            threadPool[tPN].join();
+        }
+        vector<thread>().swap(threadPool);
+    }
+    template <class T1, class T2>
+    void MfolderProcess(void (*func)(folderArgs<T1, T2> fas), T1 args, T2 *result, int threadNum)
+    {
+        // result一定要用new初始化
+        //！在func中一定对result加锁！
+        buildfolderTaskPool(threadNum);
+        folderArgs<T1, T2> fas;
+        for (int fTPN = 0; fTPN < folderTaskPool.size(); fTPN++)
+        {
+            fas = {folderTaskPool[fTPN], args, result};
+            threadPool.push_back(thread(func, fas));
+            cout << "Thread:" << to_string(fTPN) << " Start." << endl;
+        }
+        for (int tPN = 0; tPN < threadPool.size(); tPN++)
+        {
+            threadPool[tPN].join();
+        }
+        vector<thread>().swap(threadPool);
+    }
+    template <class T1>
+    void MfolderProcess(void (*func)(folderArgs<void, T1> fas), T1 *result, int threadNum)
+    {
+        // result一定要用new初始化
+        //！在func中一定对result加锁！
+        buildfolderTaskPool(threadNum);
+        folderArgs<void, T1> fas;
+        for (int fTPN = 0; fTPN < folderTaskPool.size(); fTPN++)
+        {
+            fas = {folderTaskPool[fTPN], NULL, result};
+            threadPool.push_back(thread(func, fas));
+            cout << "Thread:" << to_string(fTPN) << " Start." << endl;
+        }
+        for (int tPN = 0; tPN < threadPool.size(); tPN++)
+        {
+            threadPool[tPN].join();
+        }
+        vector<thread>().swap(threadPool);
+    }
+    template <class T1>
+    void MfolderProcess(void (*func)(folderArgs<T1, void> fas), T1 args, int threadNum)
+    {
+        buildfolderTaskPool(threadNum);
+        folderArgs<T1, void> fas;
+        for (int fTPN = 0; fTPN < folderTaskPool.size(); fTPN++)
+        {
+            fas = {folderTaskPool[fTPN], args, NULL};
+            threadPool.push_back(thread(func, fas));
+            cout << "Thread:" << to_string(fTPN) << " Start." << endl;
+        }
+        for (int tPN = 0; tPN < threadPool.size(); tPN++)
+        {
+            threadPool[tPN].join();
+        }
+        vector<thread>().swap(threadPool);
     }
 };
