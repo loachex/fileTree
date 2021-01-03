@@ -120,7 +120,7 @@ void Tree::build()
     fitFileNum = apflattenFiles.size();
     //结果报告
     et = clock();
-    cout << "Build finished in " << to_string((double)(et - st) / CLOCKS_PER_SEC) << "s" << endl;
+    cout << "Build finished in " << to_string((double)((et - st) / CLOCKS_PER_SEC)) << "s" << endl;
     cout << "include " << to_string(includeFolderNum) << " folders and " << to_string(includeFileNum) << " files" << endl;
 }
 void Tree::destory()

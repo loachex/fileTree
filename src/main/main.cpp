@@ -98,6 +98,6 @@ int main(int argc, char *argv[])
     cout << "Ave R:" << (*resultV)[0] / t->fitFileNum << ",G:" << (*resultV)[1] / t->fitFileNum << ",B:" << (*resultV)[2] / t->fitFileNum << endl;
     et = clock();
 
-    cout << "Cost time:" << to_string((et - st) / CLOCKS_PER_SEC) << " s" << endl;
+    cout << "Cost time:" << to_string(double((et - st) / CLOCKS_PER_SEC)) << " s" << endl;
     return 0;
 }
