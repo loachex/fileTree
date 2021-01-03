@@ -82,6 +82,6 @@ int main(int argc, char *argv[])
     cout << "IMG average gray scale:" << to_string(aveV(*resultV)) << endl;
     et = clock();
 
-    cout << "Cost time:" << to_string((et - st) / CLOCKS_PER_SEC) << " s" << endl;
+    cout << "Cost time:" << to_string(double((et - st) / CLOCKS_PER_SEC)) << " s" << endl;
     return 0;
 }
