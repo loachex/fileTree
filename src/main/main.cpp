@@ -31,6 +31,7 @@ double ave(cv::Mat m)
     }
     return mat_ave / double(r);
 }
+
 double aveV(vector<double> v)
 {
     int i = 0;
@@ -45,17 +46,30 @@ double aveV(vector<double> v)
 void processFunc(fileArgs<int, vector<double>> fas)
 {
     string curImgPath;
-    cv::Mat img;
-    double aveResult = 0.;
+    cv::Mat img, channel1, channel2, channel3;
+    vector<cv::Mat> channels;
+    double aveR, aveG, aveB = 0.;
     for (int i = 0; i < fas.vf.size(); i++)
     {
         curImgPath = fas.vf[i]->filePath;
-        img = cv::imread(curImgPath, CV_LOAD_IMAGE_GRAYSCALE);
-        aveResult = ave(img);
+        img = cv::imread(curImgPath);
+
+        split(img, channels);
+        channel1 = channels[0];
+        channel2 = channels[1];
+        channel3 = channels[2];
+
+        aveR = ave(channel1);
+        aveG = ave(channel2);
+        aveB = ave(channel3);
 
         mtx.lock();
-        fas.result->push_back(aveResult);
-        cout << "img:" << to_string(fas.result->size()) << "/" << fas.args << " ave:" << aveResult << endl;
+        (*fas.result)[0] = (*fas.result)[0] + aveR;
+        (*fas.result)[1] = (*fas.result)[1] + aveG;
+        (*fas.result)[2] = (*fas.result)[2] + aveB;
+        (*fas.result)[3]++;
+
+        cout << "img:" << to_string(int((*fas.result)[3])) << "/" << fas.args << "--|| R:" << to_string(aveR) << "|| G:" << to_string(aveG) << " || B:" << to_string(aveB) << endl;
         mtx.unlock();
     }
 }
@@ -66,7 +80,8 @@ int main(int argc, char *argv[])
     st = clock();
 
     vector<double> *resultV = new vector<double>();
-    string path = "/media/loachex/WD 500G/imgAnalyse";
+    (*resultV) = {0., 0., 0., 0.};
+    string path = "/media/loachex/d500g/imgAnalyse/";
 
     Tree *t = new Tree(path);
     t->stringFileFliter.addRule("format_jpg", fliterFunc_format, "jpg");
@@ -74,12 +89,13 @@ int main(int argc, char *argv[])
     t->stringFileFliter.addRule("format_jpeg", fliterFunc_format, "png");
     t->stringFileFliter.addRule("format_JPG", fliterFunc_format, "JPG");
     t->stringFileFliter.addRule("format_bmp", fliterFunc_format, "bmp");
+    t->stringFileFliter.addRule("format_JPEG", fliterFunc_format, "JPEG");
 
     t->stringFileFliter.reviseLogic(LOGIC_OR);
     t->fliter();
 
-    t->MfileProcess(processFunc, t->fitFileNum, resultV, 8);
-    cout << "IMG average gray scale:" << to_string(aveV(*resultV)) << endl;
+    t->MfileProcess(processFunc, t->fitFileNum, resultV, 4);
+    cout << "Ave R:" << (*resultV)[0] / t->fitFileNum << ",G:" << (*resultV)[1] / t->fitFileNum << ",B:" << (*resultV)[2] / t->fitFileNum << endl;
     et = clock();
 
     cout << "Cost time:" << to_string((et - st) / CLOCKS_PER_SEC) << " s" << endl;
