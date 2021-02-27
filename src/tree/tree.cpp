@@ -29,9 +29,7 @@ Tree::~Tree()
 
 void Tree::build()
 {
-    //防止根目录里没有子目录
-    if (!rootFolder->subFoldersPath.size())
-        return;
+
     //计时以及初始信息输出
     clock_t st, et;
     st = clock();
@@ -46,57 +44,72 @@ void Tree::build()
     string curSubFolderName; //工作子目录名称
     string curFolderPath;    //工作本目录路径
 
-    do
+    //若根目录里没有子目录，则只构建其内含文件
+    if (!rootFolder->subFoldersPath.size())
     {
-        curFolderPath = curFolder->folderPath; //给工作本目录路径赋值，方便后续路径操作
-        //构建文件
-        while (curFolder->_unBuildFileNum)
+        while (rootFolder->_unBuildFileNum)
         {
-            //在工作本目录中有未构建的文件，则构建文件
-            curFileName = curFolder->filesPath[curFolder->filesPath.size() - curFolder->_unBuildFileNum];
-            cacheFile = new file(joinPath(curFolderPath.c_str(), curFileName.c_str())); //为了解决某个未知的BUG，这里用了c_str()
-            curFolder->pfiles.push_back(cacheFile);
-            curFolder->_unBuildFileNum--;
-            //向展开文件指针列表里添加
+            curFileName = rootFolder->filesPath[rootFolder->filesPath.size() - rootFolder->_unBuildFileNum];
+            cacheFile = new file(joinPath(rootFolder->folderPath.c_str(), curFileName.c_str())); //为了解决某个未知的BUG，这里用了c_str()
+            rootFolder->pfiles.push_back(cacheFile);
+            rootFolder->_unBuildFileNum--;
             apflattenFiles.push_back(cacheFile);
         }
-        //构建子目录
-        if (curFolder->_depth && !curFolder->_unBuildSubFoldersNum)
+    }
+    else
+    {
+        //若有子文件夹，则循环遍历子文件夹和子文件夹里的文件
+        do
         {
-            //（向上）
-            //当目录没有未构建的子目录，并且深度不为0时
-            //将当前目录设为上级目录（向上）
-            if (depth < curFolder->_depth)
-                depth = curFolder->_depth;
-            curFolder = curFolder->pdirFolder;
-        }
-        else
-        {
-            //（向右）
-            //新建子目录，并将其添加至当前目录的子目录指针列表中
-            curSubFolderName = curFolder->subFoldersPath[curFolder->subFoldersPath.size() - curFolder->_unBuildSubFoldersNum];
-            cacheSubFolder = new folder(joinPath(curFolderPath, curSubFolderName), curFolder->_depth + 1);
-            //若是坏目录，则跳过
-            if (!cacheSubFolder->_ok)
+            curFolderPath = curFolder->folderPath; //给工作本目录路径赋值，方便后续路径操作
+            //构建文件
+            while (curFolder->_unBuildFileNum)
             {
-                --curFolder->_unBuildSubFoldersNum;
-                delete cacheSubFolder;
-                cacheSubFolder = NULL;
-                continue;
+                //在工作本目录中有未构建的文件，则构建文件
+                curFileName = curFolder->filesPath[curFolder->filesPath.size() - curFolder->_unBuildFileNum];
+                cacheFile = new file(joinPath(curFolderPath.c_str(), curFileName.c_str())); //为了解决某个未知的BUG，这里用了c_str()
+                curFolder->pfiles.push_back(cacheFile);
+                curFolder->_unBuildFileNum--;
+                //向展开文件指针列表里添加
+                apflattenFiles.push_back(cacheFile);
             }
-            //若是正常目录，则将暂存目录的父目录设置为工作目录
-            cacheSubFolder->pdirFolder = curFolder;
-            curFolder->psubFolders.push_back(cacheSubFolder);
-            //工作目录的未构建子目录数-1
-            --curFolder->_unBuildSubFoldersNum;
-            //更新工作目录（向下）
-            curFolder = cacheSubFolder;
-            //添加至展开子目录指针列表
-            apflattenFolders.push_back(cacheSubFolder);
-        }
+            //构建子目录
+            if (curFolder->_depth && !curFolder->_unBuildSubFoldersNum)
+            {
+                //（向上）
+                //当目录没有未构建的子目录，并且深度不为0时
+                //将当前目录设为上级目录（向上）
+                if (depth < curFolder->_depth)
+                    depth = curFolder->_depth;
+                curFolder = curFolder->pdirFolder;
+            }
+            else
+            {
+                //（向右）
+                //新建子目录，并将其添加至当前目录的子目录指针列表中
+                curSubFolderName = curFolder->subFoldersPath[curFolder->subFoldersPath.size() - curFolder->_unBuildSubFoldersNum];
+                cacheSubFolder = new folder(joinPath(curFolderPath, curSubFolderName), curFolder->_depth + 1);
+                //若是坏目录，则跳过
+                if (!cacheSubFolder->_ok)
+                {
+                    --curFolder->_unBuildSubFoldersNum;
+                    delete cacheSubFolder;
+                    cacheSubFolder = NULL;
+                    continue;
+                }
+                //若是正常目录，则将暂存目录的父目录设置为工作目录
+                cacheSubFolder->pdirFolder = curFolder;
+                curFolder->psubFolders.push_back(cacheSubFolder);
+                //工作目录的未构建子目录数-1
+                --curFolder->_unBuildSubFoldersNum;
+                //更新工作目录（向下）
+                curFolder = cacheSubFolder;
+                //添加至展开子目录指针列表
+                apflattenFolders.push_back(cacheSubFolder);
+            }
 
-    } while (curFolder->_depth || curFolder->_unBuildSubFoldersNum);
-
+        } while (curFolder->_depth || curFolder->_unBuildSubFoldersNum);
+    }
     //计数
     includeFolderNum = apflattenFolders.size();
     includeFileNum = apflattenFiles.size();
